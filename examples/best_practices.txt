@@ -1,0 +1,13 @@
+Read the given problem and understand it clearly. It is of utmost importance to clearly comprehend the problem given to us. If you have a vague understanding of the problem, you cannot develop a heuristic approach to solve the problem.
+After clearly understanding the problem, analyze it and list out the various approaches that you think are feasible to solve the problem.
+After listing out the feasible methods to solve the problem, consider all factors in mind and choose the optimal approach that keeps your code as simple as possible. While doing this, keep in mind all the inbuilt functions that might come in handy to solve the problem.
+There are a lot of algorithms available on the net to approach various problems. Either use a pre-defined algorithm to solve the problem or develop your own.
+It is preferable for new programming enthusiasts to study and analyze the pre-existing algorithms that have been proposed years ago by proficient programmers and developers. After developing a basic understanding, you may proceed towards building your own.
+Don’t be afraid of trial and error. If you are working on a complex program, whenever you are storing modifiable values in temporary variables, use the printf() statement to check the intermediate values to be sure if you’re on the right track.
+Always remember, logic does not come out of anywhere. It comes through persistent practice and eagerness to learn and explore more and more.
+Focus on the fundamentals first because they would always be there with you. Jumping to advanced problems with a vague and ambiguous understanding of the basics and expecting to master the art of programming is like building castles in the air.
+Don’t be afraid of mathematics. Keep in touch with mathematics as it is the base of solving most of the programs that we might encounter while applying for programming job interviews or designing your own application.
+Be sure to take online quizzes to check your fundamentals.
+Instead of focusing on several programming languages, focus on one completely. We usually prefer C and C++ when it comes to the implementation of data structures and algorithms as we generally write them in C/C++
+
+https://data-flair.training/blogs/c-programming-best-practices/.
