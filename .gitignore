@@ -1,6 +1,6 @@
 ## Directories 
-data/*
-plots/*
+data/
+plots/
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
