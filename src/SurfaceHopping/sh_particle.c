@@ -48,6 +48,8 @@ void sh_particle_potential_update(struct Particle *ptr, struct Potential *pot,
                                   unsigned int dim){
   ptr->pot_old = ptr->pot_curr; // how do I know it will not just change what is pointing to! TO FIGURE OUT
   ptr->pot_curr = ptr->pot_new;
+  ptr->rho_old = ptr->rho_curr; // how do I know it will not just change what is pointing to! TO FIGURE OUT
+  ptr->rho_curr = ptr->rho_new;
   if (ptr->state){
     ptr->pot_new = pot->func_potup(pot, ptr->x, dim);
     pot->func_gradup(pot, ptr->pot_grad, ptr->x, dim);
@@ -56,16 +58,24 @@ void sh_particle_potential_update(struct Particle *ptr, struct Potential *pot,
     ptr->pot_new = pot->func_potdown(pot, ptr->x, dim);
     pot->func_graddown(pot, ptr->pot_grad, ptr->x, dim);
   }
+  ptr->rho_new = pot->func_rho(pot, ptr->x, dim);
 }
 
 void sh_particle_potential_init(struct Particle *ptr, struct Potential *pot, 
                                           unsigned int dim){
   struct Particle *part = ptr;
   while(part != NULL){
+    // state
     part->state = true;
+    // potential
     part->pot_old = pot->func_potup(pot, part->x, dim);
     part->pot_curr = part->pot_old;
     part->pot_new= part->pot_old;
+    // gap
+    part->rho_old = pot->func_rho(pot, part->x, dim);
+    part->rho_curr = part->rho_old;
+    part->rho_new= part->rho_old;
+    // gradient
     pot->func_gradup(pot, part->pot_grad, part->x, dim);
     part = part -> next;
   }

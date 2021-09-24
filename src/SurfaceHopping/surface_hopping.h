@@ -10,6 +10,9 @@ struct Particle{
     double      pot_old;
     double      pot_curr;
     double      pot_new;
+    double      rho_old;
+    double      rho_curr;
+    double      rho_new;
     bool        state;
     double      *x;
     double      *p;
@@ -87,6 +90,9 @@ double      sh_transition_belayev(struct Particle *particle, struct Potential *p
 double      sh_transition_lasser(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
 double      sh_transition_landau(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
 double      sh_transition_goddard(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_goddard1(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_goddard2(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_goddard3(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
 
 #endif /* SURFACE_HOPPING_DOT_H */
 
