@@ -1,18 +1,21 @@
+NAI_DIR = ./NaI
 SH_DIR = ./SurfaceHopping
 POT_DIR = ./Potential
 ODE_DIR = ./Odeint
 OBJ_DIR = ./Object
 
-SRCS = $(wildcard $(SH_DIR)/*.c $(POT_DIR)/*.c $(ODE_DIR)/*.c) 
+# you want to have a file of target-dependencies where each gets called 
+# depending on the EXE
+SRCS = $(wildcard $(NAI_DIR)/*.c $(SH_DIR)/*.c $(POT_DIR)/pot_nai.c $(ODE_DIR)/*.c) 
 OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS))) 
 
-vpath %.c $(SH_DIR) $(POT_DIR) $(ODE_DIR)
+vpath %.c $(NAI_DIR) $(SH_DIR) $(POT_DIR) $(ODE_DIR) 
 
 CC = gcc
 CFLAGS = -Wall -g 
 LDLIBS = -lm
 
-EXE = test_evolution
+EXE = main
 #HEADERS = $(SH_DIR)/%.h $(POT_DIR)/%.h $(ODE_DIR)/%.h ?
 
 .PHONY: all run clean
@@ -20,10 +23,10 @@ EXE = test_evolution
 
 all: $(EXE)
 
-$(EXE):  $(OBJS)
+$(EXE):  $(OBJS) # LINKING STAGE
 	$(CC) -g $^ -o $@ $(LDLIBS) 
 
-$(OBJ_DIR)/%.o: %.c  
+$(OBJ_DIR)/%.o: %.c  # generates the .o files - at this stage it does not really matter if there is no implr
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
 run: $(EXE)

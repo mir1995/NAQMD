@@ -11,6 +11,15 @@ struct Hopper *sh_hopper_new(char* transition_name){
   if (!strcmp(transition_name, "goddard")){
     hopper->func_transition_probability = sh_transition_goddard;
   }
+  else if (!strcmp(transition_name, "goddard1")){
+    hopper->func_transition_probability = sh_transition_goddard1;
+  }
+  else if (!strcmp(transition_name, "goddard2")){
+    hopper->func_transition_probability = sh_transition_goddard2;
+  }
+  else if (!strcmp(transition_name, "goddard3")){
+    hopper->func_transition_probability = sh_transition_goddard3;
+  }
   else if (!strcmp(transition_name, "lasser")){
     hopper->func_transition_probability = sh_transition_lasser;
   }
@@ -25,15 +34,21 @@ struct Hopper *sh_hopper_new(char* transition_name){
   return hopper;
 }
 
+/* Single Switch Surface Hopping */
+// I would implement a different hopping function for Tully's algorithm called 
+// FSSH
+// check but it could also be the case that you do not have to 
+// pass all these function parameters? as long as they are 
+// included in the header files
 void sh_hopper_hop(struct Particle *particle, struct Hopper *hopper, 
                     struct Potential *potential, struct Odeint *odeint){
   
-  if ((particle->pot_new - particle->pot_curr) * (particle->pot_old - particle->pot_curr) > 0){
+  if ( (particle->rho_new - particle->rho_curr) * (particle->rho_old - particle->rho_curr) < 0){
     double p = hopper->func_transition_probability(particle, potential, odeint); // particle location and transition rate should suffice
-    if (p > ((double)rand() / RAND_MAX)){ // why stochastic and not deterministic
+    if (p >= ((double)rand() / RAND_MAX)){ // why stochastic and not deterministic
       /* change state of particle */
       particle->state = !(particle->state);
-      /* update potential value new */
+      /* update potential value new - do I have to for rho as well?? */
       if(particle->state){
         particle->pot_new = potential->func_potup(potential, particle->x, 1);
         potential->func_gradup(potential, particle->pot_grad, particle->x, 1);

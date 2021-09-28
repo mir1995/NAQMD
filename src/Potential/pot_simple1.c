@@ -7,12 +7,21 @@
 // Have instead a middle function to take care of this
 //
 // THIS SIMPLE1 IS A ONE DIMENSIONAL EXAMPLE - CAN YOU EXTEND IT TO MORE THAN ONE DIMENSION?
+/*
 double v_up(struct Potential *pot, double *x, unsigned int dim){
   return sqrt(pow(pot->alpha * tanh(x[0]), 2) + pow(pot->delta,2));
 }
 
 double v_down(struct Potential *pot, double *x, unsigned int dim){
   return  - v_up(pot, x, dim);
+}
+*/
+double rho(struct Potential *pot, double *x, unsigned int dim){
+  return sqrt(pow(pot->alpha * tanh(x[0]), 2) + pow(pot->delta,2));
+}
+
+double d(struct Potential *pot, double *x, unsigned int dim){
+  return 0.0;
 }
 
 double get_tau(struct Potential *pot){

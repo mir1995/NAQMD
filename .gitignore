@@ -1,3 +1,7 @@
+## Directories 
+data/
+plots/
+Object/
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof

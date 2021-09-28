@@ -1,13 +1,9 @@
 #!/bin/bash
 
-for eps in 0.1 0.05 0.03 0.25 0.02 0.01
+for delta in 1 0.5 0.05 
 do
-  for p in 1 2 3 4 5 6 
-  do
-    while [ $(jobs | wc -l) -ge 28 ]
-    do 
-      sleep 1
-    done
-    ./test_variance $eps $p 10000 &  
+  for s in 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18
+  do 
+    ./test_evolution $delta 0.1 4 100000 $s  
   done
 done
