@@ -35,11 +35,6 @@ struct Hopper *sh_hopper_new(char* transition_name){
 }
 
 /* Single Switch Surface Hopping */
-// I would implement a different hopping function for Tully's algorithm called 
-// FSSH
-// check but it could also be the case that you do not have to 
-// pass all these function parameters? as long as they are 
-// included in the header files
 void sh_hopper_hop(struct Particle *particle, struct Hopper *hopper, 
                     struct Potential *potential, struct Odeint *odeint){
   
