@@ -31,12 +31,12 @@ int main(int argc, char *argv[]){
   
   dim =1; 
   q = 5, p = 0;
-  npart = atoi(argv[1]);
-  s = atoi(argv[2]);
   param[0] = EPS;
   param[1] = DELTA;
   param[2] = ALPHA;
-  char rate[] = "goddard";
+  npart = atoi(argv[1]);
+  s = atoi(argv[2]);
+  char *rate = argv[3];
   /*
    *  PRINT SIMULATION PARAMETERS
   */
