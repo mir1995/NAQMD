@@ -51,7 +51,7 @@ int main(int argc, char *argv[]){
   /*
    *  GENERATE ARRAY FOR PARTICLES, INITIALISE SOLVER AND POTENTIAL
    */
-  struct Particle *particles = sh_particles_create(dim, npart); // it's a weird data struct - to improve
+  struct Particle *particles = sh_particles_create(dim, pow(10,7)); // it's a weird data struct - to improve
   struct Potential *pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
                                               &v_zd, &v_v12d, &v_zdd, &v_v12dd,
                                               &dd_v_up, &dd_v_down, &get_tau, "LZ", param);
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]){
   int count = 0; // count number of particles which have transitioned
   double x_c[1] = {0};
   for (int i=0; i< (int) npart/pow(10,7); i++){
-    sh_wigner_fill(particles, q, p, sqrt(EPS/2), npart, dim);  
+    sh_wigner_fill(particles, q, p, sqrt(EPS/2), pow(10,7), dim);  
     sh_particle_potential_init(particles, pot, dim);// initialise particle values - potential, gradient, level ...
     struct Particle *part = particles; // come up with a better structure than a linked list
     while(part != NULL){
