@@ -54,8 +54,10 @@ int main(int argc, char *argv[]){
    *  GENERATE ARRAY FOR PARTICLES, INITIALISE SOLVER AND POTENTIAL
    */
   struct Particle *particles = sh_particles_create(dim, pow(10,7)); // it's a weird data struct - to improve
-  struct Potential *pot = potential_construct(&rho, &v_zd, &v_v12d, &grad_v_up, &grad_v_down,
-                                              &dd_v_up, &dd_v_down, &get_tau, "nai", param);
+  struct Potential *pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
+                                              &v_zd, &v_v12d, &v_zdd, &v_v12dd,
+                                              &dd_v_up, &dd_v_down, &get_tau,
+                                              "NaI", param);
   struct Odeint *solver = odeint_new(20, 0.001, 1, "lietrotter_symplectic"); // not needed
   struct Hopper *hopper = sh_hopper_new(rate);
   
