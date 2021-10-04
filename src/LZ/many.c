@@ -89,7 +89,7 @@ int main(int argc, char *argv[]){
     struct Particle *part = particles; // come up with a better structure than a linked list
     while(part != NULL){
       // energy conservation
-      part->p_curr[0] = sqrt(pow(part->p_curr[0], 2) + \
+      part->p_curr[0] = sqrt(pow(part->p[0], 2) + \
           2 * (pot->func_potup(pot, part->x, 1) - pot->func_potup(pot, x_c, 1)));
       part->x_curr[0] = x_c[0];
       if (hopper->func_transition_probability(part, pot, solver)>= ((double)rand() / RAND_MAX)){ // why stochastic and not deterministic
