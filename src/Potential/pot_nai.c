@@ -27,7 +27,11 @@
 #define BETA12 0.19408776741560804
 #define RX 13.095802049392756
 
-/* potential in the diabatic representation */
+/* 
+ * Potential in the diabatic representation 
+ *
+ */
+
 static double v11(double *x){
   return A1 * exp(-BETA1 * (x[0] - R0));
 }
@@ -36,6 +40,10 @@ static double v11d(double *x){
   return - BETA1 * v11(x);
 }
 
+static double v11dd(double *x){
+  return pow(BETA1,2) * v11(x);
+}
+// at some point write the following in terms of itself
 static double v22(double *x){
   return (A2 + pow(B2 / x[0], 8)) * exp(-x[0]/RO) - E2 / x[0] \
     - E2 * (LAMBDAP + LAMBDAM) / (2 * pow(x[0], 4)) - C2 / pow(x[0], 6) \
@@ -49,6 +57,15 @@ static double v22d(double *x){
     14 * E2 * LAMBDAP * LAMBDAM / pow(x[0],8);
 }
 
+static double v22dd(double *x){
+  return 72 * pow(B2, 8) / pow(x[0], 10) * exp(- x[0] / RO) \
+    + 1/pow(RO,2) * (A2 + pow(B2 / x[0] , 8)) * exp(-x[0] / RO) + \
+    16 * pow(B2,8) / RO / pow(x[0], 9) * exp(- x[0] / RO) \
+    - 2 * E2 / pow(x[0],3) + \
+    - 10 * E2 * (LAMBDAP + LAMBDAM) / pow(x[0],6) - 42 * C2 / pow(x[0], 8) + \
+    - 112 * E2 * LAMBDAP * LAMBDAM / pow(x[0],9);
+}
+
 static double v12(double *x){
   return A12 * exp( - BETA12 * pow(x[0] - RX, 2));
 }
@@ -57,58 +74,44 @@ static double v12d(double *x){
   return - 2 * BETA12  * (x[0] - RX) * v12(x);
 }
 
-/* Handles construction of potential in the adiabatic representation */
+static double v12dd(double *x){
+  return (- 2 * BETA12 + 4 * pow(BETA12, 2) * pow(x[0] - RX, 2) )* v12(x);
+}
 
-// the following functions should go in some common file, so that you 
-// do not repeat code
-static double z(double *x){
+
+/* 
+ * Handles construction of potential in the diabatic representation 
+ *
+ * */
+
+double v_z(struct Potential *pot, double *x, unsigned int dim){
   return 0.5 * (v11(x) - v22(x));
 }
-
-static double zd(double *x){
+double v_zd(struct Potential *pot, double *x, unsigned int dim){
   return 0.5 * (v11d(x) - v22d(x));
 }
-
-double d(struct Potential *pot, double *x, unsigned int dim){
-  return 0.5 * (v11(x) + v22(x));
+double v_zdd(struct Potential *pot, double *x, unsigned int dim){
+  return 0.5 * (v11dd(x) - v22dd(x));
 }
 
-static double dd(double *x){
-  return 0.5 * (v11d(x) + v22d(x));
-}
-
-double rho(struct Potential *pot, double *x, unsigned int dim){
-  return sqrt(pow(z(x), 2) + pow(v12(x),2));
-}
-// to solve: can define v11, v12, v22 and then call into other functions? it would be much more general...
-/*
-double v_up(struct Potential *pot, double *x, unsigned int dim){
-  return rho(x) + d(x);
-}
-
-double v_down(struct Potential *pot, double *x, unsigned int dim){
-  return - rho(x) + d(x);
-}
-*/
-double v_zd(struct Potential *pot, double *x, unsigned int dim){
-  return zd(x);
+double v_v12(struct Potential *pot, double *x, unsigned int dim){
+  return v12(x);
 }
 
 double v_v12d(struct Potential *pot, double *x, unsigned int dim){
   return v12d(x);
 }
 
-void grad_v_up(struct Potential *pot, double *grad_v, double *x, unsigned int dim){
-  for(unsigned int i=0; i<dim; i++){
-    grad_v[i] = (z(x) * zd(x) + v12(x) * v12d(x)) / rho(pot, x, dim) + dd(x);
-  }
+double v_v12dd(struct Potential *pot, double *x, unsigned int dim){
+  return v12dd(x);
 }
 
-void grad_v_down(struct Potential *pot, double *grad_v, double *x, unsigned int dim){
+double v_trace(struct Potential *pot, double *x, unsigned int dim){
+  return 0.5 * (v11(x) + v22(x));
+}
 
-  for(unsigned int i=0; i<dim; i++){
-    grad_v[i] = - (z(x) * zd(x) + v12(x) * v12d(x)) / rho(pot, x, dim) + dd(x);
-  }
+double v_traced(struct Potential *pot, double *x, unsigned int dim){
+  return 0.5 * (v11d(x) + v22d(x));
 }
 
 double get_tau(struct Potential *pot){
