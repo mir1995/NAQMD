@@ -10,8 +10,8 @@ double sh_transition_belayev(struct Particle *particle, struct Potential *potent
       (potential->func_z(potential, particle->x_curr, 1) * potential->func_zdd(potential, particle->x_curr, 1) + \
       potential->func_v12(potential, particle->x_curr, 1) * potential->func_v12dd(potential, particle->x_curr, 1)) + \
       - (potential->func_z(potential, particle->x_curr, 1) * potential->func_zd(potential, particle->x_curr, 1) + \
-      potential->func_v12(potential, particle->x_curr, 1) * potential->func_v12d(potential, particle->x_curr, 1)) \
-      * potential->func_traced(potential, particle->x_curr, 1) );
+      potential->func_v12(potential, particle->x_curr, 1) * potential->func_v12d(potential, particle->x_curr, 1)) * \
+	potential->func_traced(potential, particle->x_curr, 1) );
   return exp(- M_PI / potential->eps * pow(potential->delta,2) / k ); 
 }
 
@@ -22,11 +22,10 @@ double sh_transition_landau(struct Particle *particle, struct Potential *potenti
 
 double sh_transition_lasser(struct Particle *particle, struct Potential *potential,
                             struct Odeint *odeint){
-  double z = 2*potential->delta; 
   double k = sqrt(pow(potential->func_zd(potential, particle->x_curr, 1), 2) + \
              pow(potential->func_v12d(potential, particle->x_curr, 1), 2)) \
              * particle->p_curr[0];
-  return exp(- M_PI / potential->eps * pow(z,2) / 4.0 / k);
+  return exp(- M_PI / potential->eps * pow(potential->delta,2) / k);
 }
 
 double sh_transition_goddard(struct Particle *particle, struct Potential *potential,
