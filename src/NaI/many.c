@@ -1,4 +1,4 @@
-/* main.c */
+/* many.c */
 #include <stdlib.h> /*supplies malloc(), calloc(), realloc() */
 #include <unistd.h> /* EXIT_SUCCESS */
 #include <stdio.h> /* printf */
@@ -12,15 +12,15 @@
 // alpha is used in the approximation to the transition rate
 #define ALPHA 0.002669794983146837
 #define DELTA 0.002010562925688143 
-#define EPS 0.0019227199721312948
+#define EPS 0.014654629670711006
 
 int main(int argc, char *argv[]){
     
   /*
    * INITIALISE PARAMETERS
    */
-  
-  int npart, dim, s;
+  long npart;
+  int dim, s;
   double q, p;
   double param[3];
   FILE *file;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
 
   printf(" ***************************************************************\n");
   printf(" NaI case study: No dynamics - estimating number of particles  \n");
-  printf("---> NPART     :  %d\n",npart);
+  printf("---> NPART     :  %ld\n",npart);
   printf("---> q         :  %.4f\n", q);
   printf("---> p         :  %.4f\n", p);
   printf("---> POTENTIAL :  NaI \n"); 
@@ -81,17 +81,11 @@ int main(int argc, char *argv[]){
   int count = 0; // count number of particles which have transitioned
   double x_c[1] = {13.27801894097567};
     
-  for (int i=0; i< (int) npart/pow(10,7); i++){
+  for (int i=0; i< (long) npart/pow(10,7); i++){
     sh_wigner_fill(particles, q, p, sqrt(EPS/2), pow(10,7), dim);  
     sh_particle_potential_init(particles, pot, dim);// initialise particle values - potential, gradient, level ...
 
-    /*
-     *  SIMULATION: STEP - CHECK FOR AVOIDED CROSSING - UPDATE POTENTIAL - STEP
-     *  AT LEAST ONE SIMULATION CHECKING SURFACE HOPPING TO WAVEPACKET DYNAMICS
-     */
-
     struct Particle *part = particles; // come up with a better structure than a linked list
-    
     while(part != NULL){
       // energy conservation
       part->p_curr[0] = sqrt(pow(part->p[0], 2) + \
@@ -103,7 +97,7 @@ int main(int argc, char *argv[]){
       part = part->next;
     }
   }
-  fprintf(file, "%d \t %.17g \n", npart, count * 1.0 / npart);
+  fprintf(file, "%ld \t %.17g \n", npart, count * 1.0 / npart);
   return 0;
 }
 
