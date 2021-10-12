@@ -68,8 +68,8 @@ struct Potential    *potential_construct(
   pot->func_traced = v_traced;
   pot->func_zd = func_zd;
   pot->func_v12d = func_v12d;
-  pot->func_zdd = func_zd;
-  pot->func_v12dd = func_v12d;
+  pot->func_zdd = func_zdd;
+  pot->func_v12dd = func_v12dd;
   pot->func_gradup = grad_v_up;
   pot->func_graddown = grad_v_down;
   pot->func_dd_up = func_dd_up;

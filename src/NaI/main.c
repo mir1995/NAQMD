@@ -19,7 +19,6 @@ int main(int argc, char *argv[]){
   /*
    * INITIALISE PARAMETERS
    */
-  
   int npart, dim, t, s;
   double dt, q, p;
   double param[3];
