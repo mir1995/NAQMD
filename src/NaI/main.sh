@@ -6,7 +6,7 @@ do
   do
     for rate in goddard goddard1 goddard2 goddard3 lasser belayev 
       do 
-        while [ $(jobs | wc -l) -ge 10 ] 
+        while [ $(jobs | wc -l) -ge 20 ] 
         do 
           sleep 1 
         done
