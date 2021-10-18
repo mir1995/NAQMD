@@ -86,13 +86,16 @@ void        sh_hopper_hop(struct Particle *particle, struct Hopper *hopper,
 // there are not many transition rates so could use switch principle as with numerical solvers
 /* ---------- Transition rates --------- */
 
-double      sh_transition_belayev(struct Particle *particle, struct Potential *potential, struct Odeint *odeint); // probably not in this file then...?
-double      sh_transition_lasser(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_landau(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_goddard(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_goddard1(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_goddard2(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_goddard3(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_lzadia(struct Particle *particle, struct Potential *potential, struct Odeint *odeint); // probably not in this file then...?
+double      sh_transition_lzdia(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_sa(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_sa1(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_sa2(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_sa3(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_sa12(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_sa13(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_sa23(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_sa123(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
 
 #endif /* SURFACE_HOPPING_DOT_H */
 

@@ -8,26 +8,35 @@
 struct Hopper *sh_hopper_new(char* transition_name){
 
   struct Hopper *hopper = malloc(sizeof(struct Hopper));
-  if (!strcmp(transition_name, "goddard")){
-    hopper->func_transition_probability = sh_transition_goddard;
+  if (!strcmp(transition_name, "sa")){
+    hopper->func_transition_probability = sh_transition_sa;
   }
-  else if (!strcmp(transition_name, "goddard1")){
-    hopper->func_transition_probability = sh_transition_goddard1;
+  else if (!strcmp(transition_name, "sa1")){
+    hopper->func_transition_probability = sh_transition_sa1;
   }
-  else if (!strcmp(transition_name, "goddard2")){
-    hopper->func_transition_probability = sh_transition_goddard2;
+  else if (!strcmp(transition_name, "sa2")){
+    hopper->func_transition_probability = sh_transition_sa2;
   }
-  else if (!strcmp(transition_name, "goddard3")){
-    hopper->func_transition_probability = sh_transition_goddard3;
+  else if (!strcmp(transition_name, "sa3")){
+    hopper->func_transition_probability = sh_transition_sa3;
   }
-  else if (!strcmp(transition_name, "lasser")){
-    hopper->func_transition_probability = sh_transition_lasser;
+  else if (!strcmp(transition_name, "sa12")){
+    hopper->func_transition_probability = sh_transition_sa12;
   }
-  else if (!strcmp(transition_name, "belayev")){
-    hopper->func_transition_probability = sh_transition_belayev;
+  else if (!strcmp(transition_name, "sa13")){
+    hopper->func_transition_probability = sh_transition_sa13;
   }
-  else if (!strcmp(transition_name, "landau")){
-    hopper->func_transition_probability = sh_transition_landau;
+  else if (!strcmp(transition_name, "sa23")){
+    hopper->func_transition_probability = sh_transition_sa23;
+  }
+  else if (!strcmp(transition_name, "sa123")){
+    hopper->func_transition_probability = sh_transition_sa123;
+  }
+  else if (!strcmp(transition_name, "lzadia")){
+    hopper->func_transition_probability = sh_transition_lzadia;
+  }
+  else if (!strcmp(transition_name, "lzdia")){
+    hopper->func_transition_probability = sh_transition_lzdia;
   }
   hopper->func_hop = sh_hopper_hop; 
 
