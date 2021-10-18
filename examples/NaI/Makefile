@@ -4,7 +4,7 @@ POT_DIR = ../Potential
 ODE_DIR = ../Odeint
 OBJ_DIR = ./Object
 
-EXE = many
+EXE = explore# many
 # should not be a problem # it would be good to keep a separate file with the dependencies
 SRCS = $(wildcard $(EXE).c $(SH_DIR)/*.c $(POT_DIR)/potential.c $(POT_DIR)/pot_nai.c $(ODE_DIR)/*.c) 
 OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS))) 
