@@ -1,15 +1,15 @@
-#LZ_DIR = ../LZ
+#NAI_DIR = ../NaI
 SH_DIR = ../SurfaceHopping
 POT_DIR = ../Potential
 ODE_DIR = ../Odeint
 OBJ_DIR = ./Object
 
-EXE = many
+EXE = explore# many
 # should not be a problem # it would be good to keep a separate file with the dependencies
-SRCS = $(wildcard $(EXE).c $(SH_DIR)/*.c $(POT_DIR)/potential.c $(POT_DIR)/pot_lz.c $(ODE_DIR)/*.c) 
+SRCS = $(wildcard $(EXE).c $(SH_DIR)/*.c $(POT_DIR)/potential.c $(POT_DIR)/pot_nai.c $(ODE_DIR)/*.c) 
 OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS))) 
 
-vpath %.c $(LZ_DIR) $(SH_DIR) $(POT_DIR) $(ODE_DIR) 
+vpath %.c $(NAI_DIR) $(SH_DIR) $(POT_DIR) $(ODE_DIR) 
 
 CC = gcc
 CFLAGS = -pedantic -Wall -g 

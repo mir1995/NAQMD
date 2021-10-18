@@ -7,7 +7,7 @@
 double sh_transition_lzadia(struct Particle *particle, struct Potential *potential,
                               struct Odeint *odeint){
   double k = sqrt(pow(particle->p_curr[0],2) * (pow(potential->func_zd(potential, particle->x_curr, 1), 2) + \
-             pow(potential->func_v12d(potential, particle->x_curr, 1), 2) ) + pow(particle->p_curr[0], 2) *\
+        pow(potential->func_v12d(potential, particle->x_curr, 1), 2) ) + pow(particle->p_curr[0], 2) *\
       (potential->func_z(potential, particle->x_curr, 1) * potential->func_zdd(potential, particle->x_curr, 1) + \
       potential->func_v12(potential, particle->x_curr, 1) * potential->func_v12dd(potential, particle->x_curr, 1)) + \
       - (potential->func_z(potential, particle->x_curr, 1) * potential->func_zd(potential, particle->x_curr, 1) + \
