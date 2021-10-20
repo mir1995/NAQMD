@@ -1,25 +1,26 @@
-/* main.c */
+/* dynamics.c */
 #include <stdlib.h> /*supplies malloc(), calloc(), realloc() */
 #include <unistd.h> /* EXIT_SUCCESS */
 #include <stdio.h> /* printf */
 #include <math.h>
-#include "../SurfaceHopping/surface_hopping.h"
-#include "../Odeint/odeint.h"
-#include "../Potential/potential.h"
+#include "../../src/SurfaceHopping/surface_hopping.h"
+#include "../../src/Odeint/odeint.h"
+#include "../../src/Potential/potential.h"
 #include <time.h> // srand(time(0))
 
 
 // alpha is used in the approximation to the transition rate
 #define ALPHA 0.002669794983146837
 #define DELTA 0.002010562925688143 
-#define EPS 0.0019227199721312948
+#define EPS 0.014654629670711006
 
 int main(int argc, char *argv[]){
     
   /*
    * INITIALISE PARAMETERS
    */
-  int npart, dim, t, s;
+  int npart;
+  int dim, t, s;
   double dt, q, p;
   double param[3];
   FILE *file;
@@ -31,12 +32,12 @@ int main(int argc, char *argv[]){
   dim =1; 
   t = 80, dt = 0.01;
   q = 5, p = 0;
-  npart = 100000;
-  s = 1;
+  npart = pow(10,7);
+  s = argv[2];
   param[0] = EPS;
   param[1] = DELTA;
   param[2] = ALPHA;
-  char rate[] = "goddard3";
+  char *rate = argv[1];
   /*
    *  PRINT SIMULATION PARAMETERS
   */
@@ -58,18 +59,20 @@ int main(int argc, char *argv[]){
    */
   struct Particle *particles = sh_particles_create(dim, npart); // it's a weird data struct - to improve
   struct Odeint *solver = odeint_new(t, dt, dim, "lietrotter_symplectic");
-  struct Potential *pot = potential_construct(&rho, &v_zd, &v_v12d, &grad_v_up, &grad_v_down,
-                                              &dd_v_up, &dd_v_down, &get_tau, "nai", param);
+  struct Potential *pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
+                                              &v_zd, &v_v12d, &v_zdd, &v_v12dd,
+                                              &dd_v_up, &dd_v_down, &get_tau,
+                                              "NaI", param);
   struct Observables *observables = sh_observables_new(npart, dim);
   struct Hopper *hopper = sh_hopper_new(rate);
 
   char filename[200];
-  sprintf(filename, "./data/observables_npart%d%s.txt", npart, rate); 
+  sprintf(filename, "./data/observables_npart%d_rate%s.txt", npart, rate); 
   file = fopen(filename, "w"); 
 
 
   /*
-   *  SAMPLE PARTICLES FROM INITIAL WIGNER DISTRIBUTION (GAUSSIAN FOR THE MOMENT)
+   *  SAMPLE PARTICLES FROM ITIAL WIGNER DISTRIBUTION (GAUSSIAN FOR THE MOMENT)
    */
   printf(" ***************************************************************\n");
   printf("    INITIALISE PARTICLES FROM WIGNER DISTRIBUTION   \n");
