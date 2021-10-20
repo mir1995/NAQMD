@@ -96,7 +96,7 @@ int main(int argc, char *argv[]){
       part->p_curr[0] = sqrt(pow(part->p[0], 2) + \
           2 * (pot->func_potup(pot, part->x, 1) - pot->func_potup(pot, x_c, 1)));
       part->x_curr[0] = x_c[0];
-      double pr = (double)rand() / RAND_MAX; 
+      double pr = ((double)rand() / RAND_MAX); 
       if (sh_transition_lzdia(part, pot, solver)>= pr){ 
         count_lzdia += 1;
       }
