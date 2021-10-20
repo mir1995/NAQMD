@@ -79,16 +79,16 @@ int main(int argc, char *argv[]){
    */
 
   
-  int count_lzdia = 0; // count number of particles which have transitioned
-  int count_lzadia = 0;
-  int count_sa = 0;
-  int count_sa1 = 0;
-  int count_sa2 = 0;
-  int count_sa3 = 0;
-  int count_sa12 = 0;
-  int count_sa13 = 0;
-  int count_sa23 = 0;
-  int count_sa123 = 0;
+  long int count_lzdia = 0; // count number of particles which have transitioned
+  long int count_lzadia = 0;
+  long int count_sa = 0;
+  long int count_sa1 = 0;
+  long int count_sa2 = 0;
+  long int count_sa3 = 0;
+  long int count_sa12 = 0;
+  long int count_sa13 = 0;
+  long int count_sa23 = 0;
+  long int count_sa123 = 0;
   // the crossing is at x = 0
   double x_c[1] = {0};
   for (int i=0; i< (int) npart/pow(10,7); i++){
