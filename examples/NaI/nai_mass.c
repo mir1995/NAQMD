@@ -73,20 +73,19 @@ int main(int argc, char *argv[]){
   printf(" ***************************************************************\n");
 
   srand(s); // INITIALISE SEED // what is the actual variance...?
-  int count_lzdia = 0; // count number of particles which have transitioned
-  int count_lzadia = 0;
-  int count_sa = 0;
-  int count_sa1 = 0;
-  int count_sa2 = 0;
-  int count_sa3 = 0;
-  int count_sa12 = 0;
-  int count_sa13 = 0;
-  int count_sa23 = 0;
-  int count_sa123 = 0;
+  long int count_lzdia = 0; // count number of particles which have transitioned
+  long int count_lzadia = 0;
+  long int count_sa = 0;
+  long int count_sa1 = 0;
+  long int count_sa2 = 0;
+  long int count_sa3 = 0;
+  long int count_sa12 = 0;
+  long int count_sa13 = 0;
+  long int count_sa23 = 0;
+  long int count_sa123 = 0;
   // the crossing has been pre-computed
-  double x_c[1] = {13.27801894097567};
-    
-  for (int i=0; i< (int) npart/pow(10,7); i++){
+  double x_c[1] = {13.27801894097567}; 
+  for (int i=0; i< (int) (npart/pow(10,7)); i++){
     sh_wigner_fill(particles, q, p, sqrt(EPS/2), pow(10,7), dim);  
     sh_particle_potential_init(particles, pot, dim);// initialise particle values - potential, gradient, level ...
 
@@ -130,9 +129,9 @@ int main(int argc, char *argv[]){
       part = part->next;
     }
   }
-  fprintf(file, "%s \t %.17g \n", "lz_dia", count_lzdia * 1.0 / npart);
+  fprintf(file, "%s \t %.17g \n", "lz_dia", count_lzdia * 1.0 / npart );
   fprintf(file, "%s \t %.17g \n", "lz_adia", count_lzadia * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \n", "sa", count_sa * 1.0 / npart);
+  fprintf(file, "%s \t %.17g \n", "sa", count_sa * 1.0 / npart );
   fprintf(file, "%s \t %.17g \n", "sa1", count_sa1 * 1.0 / npart);
   fprintf(file, "%s \t %.17g \n", "sa2", count_sa2 * 1.0 / npart);
   fprintf(file, "%s \t %.17g \n", "sa3", count_sa3 * 1.0 / npart);
