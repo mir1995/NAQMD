@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
   long int count_sa123 = 0;
   // the crossing is at x = 0
   double x_c[1] = {0};
-  for (int i=0; i< (int) npart/pow(10,7); i++){
+  for (int i=0; i< (int) (npart/pow(10,7)); i++){
     sh_wigner_fill(particles, q, p, sqrt(EPS/2), pow(10,7), dim);  
     sh_particle_potential_init(particles, pot, dim);// initialise particle values - potential, gradient, level ...
     struct Particle *part = particles; // come up with a better structure than a linked list
