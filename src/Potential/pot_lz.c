@@ -6,9 +6,6 @@
  * The Landau-Zener type potential is given in ?
  */
 
-
-
-
 /* Handles construction of potential in the adiabatic representation */
 
 double v_z(struct Potential *pot, double *x, unsigned int dim){

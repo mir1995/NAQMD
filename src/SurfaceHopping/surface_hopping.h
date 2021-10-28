@@ -37,12 +37,12 @@ struct Observables{
 };
 
 struct Hopper{
-  double (*func_transition_probability)(struct Particle *particle, 
-                                        struct Potential *potential,
+  double (*func_transition_probability)(struct Particle *part, 
+                                        struct Potential *pot,
                                         struct Odeint *odeint);
-  void (*func_hop)(struct Particle *particle, 
+  void (*func_hop)(struct Particle *part, 
                     struct Hopper *hopper,
-                    struct Potential *potential, 
+                    struct Potential *pot, 
                     struct Odeint *odeint);
 };
 
@@ -59,7 +59,7 @@ void                sh_particle_destroy(struct Particle *ptr); // free memory
 
 /* ---------- Initialise Wigner samples --------- */
 
-void        sh_wigner_fill(struct Particle *ptr, double q, double p, double std, int npart, int dim);
+void        sh_wigner_fill(struct Particle *ptr, double *q, double *p, double std, int npart, int dim);
 
 
 /* ---------- Update particle data --------- */
@@ -79,23 +79,23 @@ void sh_observables_update(struct Observables *observables, struct Particle *par
  * Handles the hopping of particles for different implementation. */
 
 struct Hopper *sh_hopper_new(char* transition_name);
-void        sh_hopper_hop(struct Particle *particle, struct Hopper *hopper,
-                          struct Potential *potential, struct Odeint *odeint);    // maybe pass transition rate as pointer to function for this one above
+void        sh_hopper_hop(struct Particle *part, struct Hopper *hopper,
+                          struct Potential *pot, struct Odeint *odeint);    // maybe pass transition rate as pointer to function for this one above
 
 
 // there are not many transition rates so could use switch principle as with numerical solvers
 /* ---------- Transition rates --------- */
 
-double      sh_transition_lzadia(struct Particle *particle, struct Potential *potential, struct Odeint *odeint); // probably not in this file then...?
-double      sh_transition_lzdia(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_sa(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_sa1(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_sa2(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_sa3(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_sa12(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_sa13(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_sa23(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
-double      sh_transition_sa123(struct Particle *particle, struct Potential *potential, struct Odeint *odeint);
+double      sh_transition_lzadia(struct Particle *part, struct Potential *pot, struct Odeint *odeint); // probably not in this file then...?
+double      sh_transition_lzdia(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
+double      sh_transition_sa(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
+double      sh_transition_sa1(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
+double      sh_transition_sa2(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
+double      sh_transition_sa3(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
+double      sh_transition_sa12(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
+double      sh_transition_sa13(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
+double      sh_transition_sa23(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
+double      sh_transition_sa123(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
 
 #endif /* SURFACE_HOPPING_DOT_H */
 
