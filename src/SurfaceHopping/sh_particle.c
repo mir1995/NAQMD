@@ -30,7 +30,6 @@ struct Particle *sh_particle_add(int dim, struct Particle *particles){ // perhap
 
 struct Particle *sh_particles_create(int dim, int npart){
   
-  //printf("Size of struct Particle %lu \n", sizeof(struct Particle));
   struct Particle *particles = sh_particle_new(dim);    
   for(int i=1; i<npart; i++){
     particles = sh_particle_add(dim, particles);
