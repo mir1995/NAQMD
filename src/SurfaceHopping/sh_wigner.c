@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 void sh_wigner_fill(struct Particle *ptr,
-                    double q, double p, double std, 
+                    double *q, double *p, double std, 
                     int npart, int dim){
     // Box-Muller generates two samples
     // you might want to pass in two samples
@@ -26,8 +26,9 @@ void sh_wigner_fill(struct Particle *ptr,
                 // project onto cartesian co-ordinates
                 // Box-Muller for independent distributions
                 // the mean and variance are rather restrictive at the moment
-                part->x[j] = (sqrt(- 2 * log(x)) * cos(2*M_PI*y))*std + q; 
-                part->p[j] = (sqrt(- 2 * log(x)) * sin(2*M_PI*y))*std + p; 
+                // are the two samples correlated though?
+                part->x[j] = (sqrt(- 2 * log(x)) * cos(2*M_PI*y))*std + q[j]; 
+                part->p[j] = (sqrt(- 2 * log(x)) * sin(2*M_PI*y))*std + p[j]; 
         }
         part = part->next;
     }
