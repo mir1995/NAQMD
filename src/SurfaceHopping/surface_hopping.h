@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "../Odeint/odeint.h"
 #include "../Potential/potential.h"
+#include "../../setup.h"
 
 /* ------------ Structures (shared) -------------*/
 struct Particle{
@@ -14,26 +15,26 @@ struct Particle{
     double      rho_curr;
     double      rho_new;
     bool        state;
-    double      *x;
-    double      *p;
-    double      *x_curr;
-    double      *p_curr;
-    double      *pot_grad;
-    struct Particle *next;
+    double      x[DIM];
+    double      p[DIM];
+    double      x_curr[DIM];
+    double      p_curr[DIM];
+    double      pot_grad[DIM];
 };
 
 struct Observables{
-    int npart;
+    const unsigned int npart;
+    const unsigned int dim;
     double mass_up;
     double mass_down;
     double ke_up;
     double ke_down;
     double e_up;
     double e_down;
-    double *x_up;
-    double *x_down;
-    double *p_up;
-    double *p_down;
+    double x_up[DIM];
+    double x_down[DIM];
+    double p_up[DIM];
+    double p_down[DIM];
 };
 
 struct Hopper{
@@ -49,30 +50,26 @@ struct Hopper{
 
 /* ---------- Allocate memory -------- to be improved */
 
-struct Particle    *sh_particles_create(int dim, int npart); // allocate mem for n particles
-struct Particle    *sh_particle_new(int dim); // allocate mem for n particles - I do not think linked list is efficient
-struct Particle    *sh_particle_add(int dim, struct Particle *particles); // allocate mem for n particles
+struct Particle    *sh_particles_create(const unsigned int npart, const unsigned int dim); // allocate mem for n particles
 struct Particle    *sh_sample_wigner(int dim, int npart); // allocate mem for n particles
-void                sh_particle_set_pointers(struct Particle *ptr, int dim); // allocates memory for particle_t
-void                sh_particle_destroy(struct Particle *ptr); // free memory
 
 
 /* ---------- Initialise Wigner samples --------- */
 
-void        sh_wigner_fill(struct Particle *ptr, double *q, double *p, double std, int npart, int dim);
+void        sh_wigner_fill(struct Particle *particles, double *q, double *p, double std, int npart, int dim);
 
 
 /* ---------- Update particle data --------- */
 
-void        sh_particle_potential_init(struct Particle *ptr, struct Potential *pot,
-                                          unsigned int dim);
-void        sh_particle_potential_update(struct Particle *ptr, struct Potential *pot,
-                                          unsigned int dim);
+void        sh_particle_potential_init(struct Particle *particles, struct Potential *pot,
+                                       const unsigned int npart, const unsigned int dim);
+void        sh_particle_potential_update(struct Particle *part, struct Potential *pot,
+                                         const unsigned int dim);
 
 /* ---------- Construct observables structure--------- */
 
 struct Observables *sh_observables_new(unsigned int npart, unsigned int dim);
-void sh_observables_update(struct Observables *observables, struct Particle *particles, unsigned int dim);
+void sh_observables_update(struct Observables *observables, struct Particle *particles);
 
 
 /* ---------- Hopping algorithms ---------
