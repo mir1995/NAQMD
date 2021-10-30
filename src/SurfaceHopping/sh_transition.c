@@ -8,7 +8,7 @@
 double sh_transition_lzadia(struct Particle *part, struct Potential *pot,
                               struct Odeint *odeint){
   
-  unsigned int dim = odeint->dim;
+  int dim = (int) odeint->dim;
   double *grad_zd = (double *)malloc(dim * sizeof(double));
   double *grad_v12d = (double *)malloc(dim * sizeof(double));
   double *grad_zdd = (double *)malloc((dim * dim) * sizeof(double));
@@ -21,11 +21,12 @@ double sh_transition_lzadia(struct Particle *part, struct Potential *pot,
   pot->func_zdd(pot, part->x_curr, grad_zdd, dim); 
   pot->func_v12dd(pot, part->x_curr, grad_v12dd, dim);
   if (part->state){
-  pot->func_gradup(pot, part->x_curr, grad_v, dim);
+  pot->func_gradup(pot, grad_v, part->x_curr, dim);
   }
   else{
-  pot->func_graddown(pot, part->x_curr, grad_v, dim);
+  pot->func_graddown(pot, grad_v, part->x_curr, dim);
   }
+ 
   double v1[dim], v2[dim];
   for (int i=0; i<dim; i++){
     v1[i]=0;
@@ -35,7 +36,7 @@ double sh_transition_lzadia(struct Particle *part, struct Potential *pot,
       v2[i] += grad_v12dd[j + (i*dim)] * part->p_curr[j]; 
     }
   }
-  for (int i=0; i<odeint->dim; i++){
+  for (int i=0; i<dim; i++){
     a+= grad_zd[i] *  part->p_curr[i]; // r1 c1
     b+= grad_v12d[i] *  part->p_curr[i]; // r2 c1
     // check the following but it should be correct 
@@ -43,11 +44,10 @@ double sh_transition_lzadia(struct Particle *part, struct Potential *pot,
     c+= v1[i] * part->p_curr[i] - (grad_zd[i] * grad_v[i]); 
     d+= v2[i] * part->p_curr[i]- (grad_v12d[i] * grad_v[i]); 
   }
-
   double k = sqrt(pow(a, 2) + pow(b, 2) +\
       pot->func_z(pot, part->x_curr, dim) * c + \
       pot->func_v12(pot, part->x_curr, dim) * d);
-
+  
   free(grad_zd); 
   free(grad_v12d); 
   free(grad_zdd); 

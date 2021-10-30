@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "potential.h"
 #include <math.h>
 
@@ -65,8 +66,6 @@ struct Potential    *potential_construct(
     void (*func_v12d)(struct Potential *pot, double *x, double *grad, unsigned int dim),
     void (*func_zdd)(struct Potential *pot, double *x, double *hess, unsigned int dim),
     void (*func_v12dd)(struct Potential *pot, double *x, double *hess, unsigned int dim),
-    void (*func_dd_up)(struct Potential *pot, double *dd_v, double *x, unsigned int dim), 
-    void (*func_dd_down)(struct Potential *pot, double *dd_v, double *x, unsigned int dim),
     double (*func_get_tau)(struct Potential *pot),
     char* potential_name, double param[]){
   
@@ -90,8 +89,6 @@ struct Potential    *potential_construct(
   pot->func_v12dd = func_v12dd;
   pot->func_gradup = grad_v_up;
   pot->func_graddown = grad_v_down;
-  pot->func_dd_up = func_dd_up;
-  pot->func_dd_down = func_dd_down;
   pot->func_get_tau = func_get_tau;
 
   return pot;

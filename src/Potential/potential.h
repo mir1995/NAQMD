@@ -22,8 +22,6 @@ struct Potential{
   void (*func_v12dd)(struct Potential *pot, double *x, double *hess, unsigned int dim);
   void   (*func_gradup)(struct Potential *pot, double *grad_v, double *x, unsigned int dim);
   void   (*func_graddown)(struct Potential *pot, double *grad_v, double *x, unsigned int dim);
-  void   (*func_dd_up)(struct Potential *pot, double *dd_v, double *x, unsigned int dim);
-  void   (*func_dd_down)(struct Potential *pot, double *dd_v, double *x, unsigned int dim);
   double (*func_get_tau)(struct Potential *pot);
   //double  param[]; // you'd probably want a dictionary
 };
@@ -39,8 +37,6 @@ struct Potential    *potential_construct(
     void (*func_v12d)(struct Potential *pot, double *x, double *grad, unsigned int dim),
     void (*func_zdd)(struct Potential *pot, double *x, double *hess, unsigned int dim),
     void (*func_v12dd)(struct Potential *pot, double *x, double *hess, unsigned int dim),
-    void (*func_dd_up)(struct Potential *pot, double *dd_v, double *x, unsigned int dim),
-    void (*func_dd_down)(struct Potential *pot, double *dd_v, double *x, unsigned int dim),
     double (*func_get_tau)(struct Potential *pot),
     char* potential_name, double param[]);
 
@@ -58,8 +54,6 @@ double v_down(struct Potential *pot, double *x, unsigned int dim);
 double get_tau(struct Potential *pot);
 void grad_v_up(struct Potential *pot, double *grad_v, double *x, unsigned int dim);
 void grad_v_down(struct Potential *pot, double *grad_v, double *x, unsigned int dim);
-void dd_v_up(struct Potential *pot, double *dd_v, double *x, unsigned int dim);
-void dd_v_down(struct Potential *pot, double *dd_v, double *x, unsigned int dim);
 
 #endif
 

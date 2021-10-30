@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
   param[0] = EPS;
   param[1] = DELTA;
   param[2] = ALPHA;
-  npart = pow(10,10);
+  npart = pow(10,7);
   s = 1;
   /*
    *  PRINT SIMULATION PARAMETERS
@@ -52,15 +52,15 @@ int main(int argc, char *argv[]){
   /*
    *  GENERATE ARRAY FOR PARTICLES, INITIALISE SOLVER AND POTENTIAL
    */
-  struct Particle *particles = sh_particles_create(pow(10,7), dim); // it's a weird data struct - to improve
+  struct Particle *particles = sh_particles_create(pow(10,7), dim); 
   struct Potential *pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
                                               &v_zd, &v_v12d, &v_zdd, &v_v12dd,
-                                              &dd_v_up, &dd_v_down, &get_tau,
-                                              "NaI", param);
+                                              &get_tau, "NaI", param);
   struct Odeint *solver = odeint_new(20, 0.001, 1, "lietrotter_symplectic"); // not needed
   
   char filename[200];
   sprintf(filename, "data/mass_transitioned_seed%d_npart%ld.txt", s, npart);
+  sprintf(filename, "data/testing_seed%d_npart%ld.txt", s, npart);
   file = fopen(filename, "a"); 
  
   fprintf(file, "rate \t mass \n");
@@ -86,8 +86,9 @@ int main(int argc, char *argv[]){
   int count_sa123 = 0;
   // the crossing has been pre-computed
   double x_c[1] = {13.27801894097567};
-    
-  for (int i=0; i< (int) npart/pow(10,7); i++){
+  
+
+  for (int i=0; i< (int) (npart/pow(10,7)); i++){
     sh_wigner_fill(particles, q, p, sqrt(EPS/2), pow(10,7), dim);  
     sh_particle_potential_init(particles, pot, pow(10,7), dim);// initialise particle values - potential, gradient, level ...
 
@@ -97,6 +98,7 @@ int main(int argc, char *argv[]){
       part->p_curr[0] = sqrt(pow(part->p[0], 2) + \
           2 * (pot->func_potup(pot, part->x, 1) - pot->func_potup(pot, x_c, 1)));
       part->x_curr[0] = x_c[0];
+      part->rho_curr = DELTA;
       double pr = ((double)rand() / RAND_MAX); 
       if (sh_transition_lzdia(part, pot, solver)>= pr){ 
         count_lzdia += 1;

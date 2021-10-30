@@ -23,8 +23,8 @@ struct Particle{
 };
 
 struct Observables{
-    const unsigned int npart;
-    const unsigned int dim;
+    unsigned int npart;
+    unsigned int dim;
     double mass_up;
     double mass_down;
     double ke_up;
@@ -56,7 +56,8 @@ struct Particle    *sh_sample_wigner(int dim, int npart); // allocate mem for n 
 
 /* ---------- Initialise Wigner samples --------- */
 
-void        sh_wigner_fill(struct Particle *particles, double *q, double *p, double std, int npart, int dim);
+void        sh_wigner_fill(struct Particle *particles, double *q, double *p, double std, 
+                          const unsigned int npart, const unsigned int dim);
 
 
 /* ---------- Update particle data --------- */

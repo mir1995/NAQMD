@@ -87,43 +87,35 @@ static double v12dd(double *x){
 double v_z(struct Potential *pot, double *x, unsigned int dim){
   return 0.5 * (v11(x) - v22(x));
 }
-double v_zd(struct Potential *pot, double *x, unsigned int dim){
-  return 0.5 * (v11d(x) - v22d(x));
+void v_zd(struct Potential *pot, double *x, double *grad, unsigned int dim){
+  grad[0] = 0.5 * (v11d(x) - v22d(x));
 }
-double v_zdd(struct Potential *pot, double *x, unsigned int dim){
-  return 0.5 * (v11dd(x) - v22dd(x));
+void v_zdd(struct Potential *pot, double *x, double *hess, unsigned int dim){
+  hess[0] = 0.5 * (v11dd(x) - v22dd(x));
 }
 
 double v_v12(struct Potential *pot, double *x, unsigned int dim){
   return v12(x);
 }
 
-double v_v12d(struct Potential *pot, double *x, unsigned int dim){
-  return v12d(x);
+void v_v12d(struct Potential *pot, double *x, double *grad, unsigned int dim){
+  grad[0] = v12d(x);
 }
 
-double v_v12dd(struct Potential *pot, double *x, unsigned int dim){
-  return v12dd(x);
+void v_v12dd(struct Potential *pot, double *x, double *hess, unsigned int dim){
+  hess[0] = v12dd(x);
 }
 
 double v_trace(struct Potential *pot, double *x, unsigned int dim){
   return 0.5 * (v11(x) + v22(x));
 }
 
-double v_traced(struct Potential *pot, double *x, unsigned int dim){
-  return 0.5 * (v11d(x) + v22d(x));
+void v_traced(struct Potential *pot, double *x, double *grad, unsigned int dim){
+  grad[0] = 0.5 * (v11d(x) + v22d(x));
 }
 
 double get_tau(struct Potential *pot){
   // the value of tau has been computed separately 
   return 0.0023923147;
-}
-// the following are still to compute
-void dd_v_up(struct Potential *pot, double *dd_v, double *x, unsigned int dim){
-  return 0;
-}
-
-void dd_v_down(struct Potential *pot, double *dd_v, double *x, unsigned int dim){
-  return 0;
 }
 
