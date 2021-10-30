@@ -4,6 +4,7 @@
 #include <stdio.h> /* printf */
 #include <math.h>
 #include "../../src/SurfaceHopping/surface_hopping.h"
+#include "../../setup.h"
 #include "../../src/Odeint/odeint.h"
 #include "../../src/Potential/potential.h"
 #include <time.h> // srand(time(0))
@@ -21,7 +22,7 @@ int main(int argc, char *argv[]){
    */
   long int npart;
   int dim, s;
-  double q, p;
+  double q[DIM], p[DIM];
   double param[3];
   FILE *file;
   
@@ -29,8 +30,8 @@ int main(int argc, char *argv[]){
    * SET PARAMETERS
    */
   
-  dim =1; 
-  q = 5, p = 0;
+  dim =DIM; 
+  q[0] = 5, p[0] = 0;
   param[0] = EPS;
   param[1] = DELTA;
   param[2] = ALPHA;
@@ -43,15 +44,15 @@ int main(int argc, char *argv[]){
   printf(" ***************************************************************\n");
   printf(" NaI case study: No dynamics - estimating number of particles  \n");
   printf("---> NPART     :  %ld\n",npart);
-  printf("---> q         :  %.4f\n", q);
-  printf("---> p         :  %.4f\n", p);
+  printf("---> q         :  %.4f\n", q[0]);
+  printf("---> p         :  %.4f\n", p[0]);
   printf("---> POTENTIAL :  NaI \n"); 
   printf(" ***************************************************************\n");
 
   /*
    *  GENERATE ARRAY FOR PARTICLES, INITIALISE SOLVER AND POTENTIAL
    */
-  struct Particle *particles = sh_particles_create(dim, pow(10,7)); // it's a weird data struct - to improve
+  struct Particle *particles = sh_particles_create(pow(10,7), dim); // it's a weird data struct - to improve
   struct Potential *pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
                                               &v_zd, &v_v12d, &v_zdd, &v_v12dd,
                                               &dd_v_up, &dd_v_down, &get_tau,
@@ -88,10 +89,10 @@ int main(int argc, char *argv[]){
     
   for (int i=0; i< (int) npart/pow(10,7); i++){
     sh_wigner_fill(particles, q, p, sqrt(EPS/2), pow(10,7), dim);  
-    sh_particle_potential_init(particles, pot, dim);// initialise particle values - potential, gradient, level ...
+    sh_particle_potential_init(particles, pot, pow(10,7), dim);// initialise particle values - potential, gradient, level ...
 
     struct Particle *part = particles; // come up with a better structure than a linked list
-    while(part != NULL){
+    for(unsigned int i=0; i<pow(10,7); i++, part++){
       // energy conservation
       part->p_curr[0] = sqrt(pow(part->p[0], 2) + \
           2 * (pot->func_potup(pot, part->x, 1) - pot->func_potup(pot, x_c, 1)));
@@ -127,7 +128,6 @@ int main(int argc, char *argv[]){
       if (sh_transition_sa123(part, pot, solver)>= pr){ 
         count_sa123 += 1;
       }
-      part = part->next;
     }
   }
   fprintf(file, "%s \t %.17g \n", "lz_dia", count_lzdia * 1.0 / npart);
