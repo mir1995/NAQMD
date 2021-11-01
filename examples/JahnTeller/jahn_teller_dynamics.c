@@ -7,6 +7,7 @@
 #include "../../src/Odeint/odeint.h"
 #include "../../src/Potential/potential.h"
 #include <time.h> // srand(time(0))
+#include "../../setup.h" 
 
 #define GAMMA 3
 #define ALPHA 0.5 
@@ -19,11 +20,11 @@ int main(int argc, char *argv[]){
   /*
    * INITIALISE PARAMETERS
    */
-  int npart;
-  int dim, t, s;
+  unsigned int npart, dim;
+  int t, s;
   double dt;
   double q[DIM], p[DIM];
-  double param[3];
+  double param[4];
   FILE *file;
   
   /*
@@ -61,14 +62,13 @@ int main(int argc, char *argv[]){
   /*
    *  GENERATE ARRAY FOR PARTICLES, INITIALISE SOLVER AND POTENTIAL
    */
-  struct Particle *particles = sh_particles_create(dim, npart); // i think there is actually no need for the pointer 
+  struct Particle *particles = sh_particles_create(npart, dim); // i think there is actually no need for the pointer 
   
   struct Odeint *solver = odeint_new(t, dt, dim, "lietrotter_symplectic");
   // thinking I do not need to pass this as pointer
   struct Potential *pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
                                               &v_zd, &v_v12d, &v_zdd, &v_v12dd,
-                                              &dd_v_up, &dd_v_down, &get_tau,
-                                              "Jahn Teller", param);
+                                              &get_tau, "Jahn Teller", param);
   struct Observables *observables = sh_observables_new(npart, dim);
   struct Hopper *hopper = sh_hopper_new(rate);
 
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]){
 
   srand(s); // INITIALISE SEED // what is the actual variance...?
   sh_wigner_fill(particles, q, p, sqrt(EPS/2), npart, dim);
-  sh_particle_potential_init(particles, pot, dim);// initialise particle values - potential, gradient, level ...
+  sh_particle_potential_init(particles, pot, npart, dim);// initialise particle values - potential, gradient, level ...
 
   /*
    *  SIMULATION: STEP - CHECK FOR AVOIDED CROSSING - UPDATE POTENTIAL - STEP
@@ -104,20 +104,17 @@ int main(int argc, char *argv[]){
 
   for (int itr=0; itr < (int)((t*1.)/dt); itr++){
 
-    struct Particle *part = particles; // come up with a better structure than a linked list
-
-    while(part != NULL){
+    struct Particle *part = particles;
+    for(int i=0; i<npart; i++, part++){
       // 2) STEP SOLUTION IN TIME 
       solver->func_dostep(solver, part, pot);
       // 3) UPDATE PARTICLE INFORMATION 
       sh_particle_potential_update(part, pot, dim);
       // 4) CALL HOPPER 
       hopper->func_hop(part, hopper, pot, solver);
-      // next particle
-      part = part->next;
     }
     if(itr % (int)(((t*1.)/dt)/40) == 0){
-      sh_observables_update(observables, particles, dim);
+      sh_observables_update(observables, particles);
       fprintf(file, "%d \t %.17g \t %.17g \t  %.17g \
                           \t %.17g \t %.17g \t %.17g \
                           \t %.17g \t %.17g \t %.17g \
@@ -133,6 +130,8 @@ int main(int argc, char *argv[]){
   }
   
   fclose(file);
+  #ifdef ALTO
+  #endif
   return 0;
 }
 
