@@ -10,8 +10,6 @@
 #include "../../setup.h" 
 
 #define GAMMA 3
-#define ALPHA 0.5 
-#define DELTA 0.5
 #define EPS 0.01
 #define DIM 2
 
@@ -32,15 +30,13 @@ int main(int argc, char *argv[]){
    */
   
   dim = DIM; 
-  t = 6, dt = 0.01;
+  t = 6, dt = 0.001;
   q[0]=5*sqrt(EPS), q[1]=0.5*sqrt(EPS), p[0]=0, p[1]=0;
-  npart = pow(10,4); // given that you know the convergence rate of the 
+  npart = pow(10,3); // given that you know the convergence rate of the 
   // two methods, what is the corresponding number of points that 
   // accuracy
   s = 1;
   param[0] = EPS;
-  param[1] = DELTA;
-  param[2] = ALPHA;
   param[3] = GAMMA;
   char *rate = argv[1];
   /*
@@ -98,8 +94,8 @@ int main(int argc, char *argv[]){
   printf("   Surface Particle Hopping Simulation  \n");
   printf(" ***************************************************************\n");
   
-  fprintf(file, "itr \t pos_up \t pos_down \t \
-      mom_up \t mom_down \t ke_up \t ke_down \t \
+  fprintf(file, "itr \t x_up[0] \t x_up[1] \t x_down[0] \t x_down[1] \t \
+      p_up[0] \t p_up[1] \t p_down[0] \t p_down[1] \t ke_up \t ke_down \t \
       e_up \t e_down \t mass_up \t mass_down \n");
 
   for (int itr=0; itr < (int)((t*1.)/dt); itr++){
@@ -113,25 +109,27 @@ int main(int argc, char *argv[]){
       // 4) CALL HOPPER 
       hopper->func_hop(part, hopper, pot, solver);
     }
-    if(itr % (int)(((t*1.)/dt)/40) == 0){
+    if(itr % (int)(((t*1.)/dt)/80) == 0){
       sh_observables_update(observables, particles);
-      fprintf(file, "%d \t %.17g \t %.17g \t  %.17g \
-                          \t %.17g \t %.17g \t %.17g \
+      fprintf(file, "%d \t %.17g \t %.17g \t %.17g \t %.17g \t  %.17g \
+                         \t %.17g \t %.17g \t %.17g \t %.17g \t %.17g \
                           \t %.17g \t %.17g \t %.17g \
                           \t %.17g \n",
           itr,
-          observables->x_up[0], observables->x_down[0],
-          observables->p_up[0], observables->p_down[0],
+          observables->x_up[0], observables->x_up[1],
+          observables->x_down[0], observables->x_down[1],
+          observables->p_up[0], observables->p_up[1],
+          observables->p_down[0], observables->p_down[1],
           observables->ke_up, observables->ke_down,
           observables->e_up, observables->e_down,
           observables->mass_up, observables->mass_down
           );
     }
   }
+  printf("%d\n", npart);
   
   fclose(file);
   #ifdef ALTO
   #endif
   return 0;
 }
-
