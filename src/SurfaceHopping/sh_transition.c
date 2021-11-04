@@ -21,10 +21,10 @@ double sh_transition_lzadia(struct Particle *part, struct Potential *pot,
   pot->func_zdd(pot, part->x_curr, grad_zdd, dim); 
   pot->func_v12dd(pot, part->x_curr, grad_v12dd, dim);
   if (part->state){
-  pot->func_gradup(pot, grad_v, part->x_curr, dim);
+    pot->func_gradup(pot, grad_v, part->x_curr, dim);
   }
   else{
-  pot->func_graddown(pot, grad_v, part->x_curr, dim);
+    pot->func_graddown(pot, grad_v, part->x_curr, dim);
   }
  
   double v1[dim], v2[dim];
@@ -47,7 +47,8 @@ double sh_transition_lzadia(struct Particle *part, struct Potential *pot,
   double k = sqrt(pow(a, 2) + pow(b, 2) +\
       pot->func_z(pot, part->x_curr, dim) * c + \
       pot->func_v12(pot, part->x_curr, dim) * d);
-  
+ 
+
   free(grad_zd); 
   free(grad_v12d); 
   free(grad_zdd); 
@@ -76,7 +77,11 @@ double sh_transition_lzdia(struct Particle *part, struct Potential *pot,
   
   free(grad_zd); 
   free(grad_v12d); 
-  
+  //FILE *f;
+  //f = fopen("rate_diff.txt", "a");  
+  //double pr = exp(- M_PI / pot->eps * pow(part->rho_curr,2) / k);  
+  //printf("rho = %.17g \t P = %.17g \t x[0]=%.17g \t x[1]=%.17g \t p[0]=%.17g \t p[1]=%.17g\n", 
+  //    part->rho_curr, pr, part->x_curr[0], part->x_curr[1], part->p_curr[0], part->p_curr[1]);
   return exp(- M_PI / pot->eps * pow(part->rho_curr,2) / k);
 }
 

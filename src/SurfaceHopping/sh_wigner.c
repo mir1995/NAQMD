@@ -16,7 +16,7 @@ void sh_wigner_fill(struct Particle *particles,
     //linked lists are not ideal for what we want to do
     struct Particle *part = particles;
     for (unsigned int i=0; i<npart; i++, part++){
-      for (int j=0; j < dim; j++){
+      for (unsigned int j=0; j < dim; j++){
         // i think jump conditions instructions are used in assembly
         // generate two from U[0,1]
         double x = (double)rand() / RAND_MAX;   

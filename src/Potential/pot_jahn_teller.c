@@ -52,9 +52,5 @@ double get_tau(struct Potential *pot){
   // probably want to break the code if this is called
   return 0.0;
 }
-// the following are still to compute
-void dd_v_up(struct Potential *pot, double *dd_v, double *x, unsigned int dim){}
-
-void dd_v_down(struct Potential *pot, double *dd_v, double *x, unsigned int dim){}
 
 
