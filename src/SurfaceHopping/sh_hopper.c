@@ -48,7 +48,7 @@ struct Hopper *sh_hopper_new(char* transition_name){
 void sh_hopper_hop(struct Particle *part, struct Hopper *hopper, 
                     struct Potential *pot, struct Odeint *odeint){
   
-  if ( (part->rho_new - part->rho_curr) * (part->rho_old - part->rho_curr) < 0){
+  if ( (part->rho_new - part->rho_curr) * (part->rho_old - part->rho_curr) > 0){
     // exit function if particle's momentum doesn't have enough momentum
     if (!(part->state) && pow(norm_l2(part->p_curr, odeint->dim),2) - 4*part->rho_curr < 0){return;}
     // call transition rate
