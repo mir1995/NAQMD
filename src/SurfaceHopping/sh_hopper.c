@@ -47,7 +47,7 @@ struct Hopper *sh_hopper_new(char* transition_name){
 void sh_hopper_hop(struct Particle *particle, struct Hopper *hopper, 
                     struct Potential *potential, struct Odeint *odeint){
   
-  if ( (particle->rho_new - particle->rho_curr) * (particle->rho_old - particle->rho_curr) < 0){
+  if ( (particle->rho_new - particle->rho_curr) * (particle->rho_old - particle->rho_curr) > 0){
     double p = hopper->func_transition_probability(particle, potential, odeint); // particle location and transition rate should suffice
     if (p >= ((double)rand() / RAND_MAX)){ // why stochastic and not deterministic
       /* change state of particle */
