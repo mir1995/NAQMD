@@ -39,6 +39,12 @@ struct Hopper *sh_hopper_new(char* transition_name){
   else if (!strcmp(transition_name, "lzdia")){
     hopper->func_transition_probability = sh_transition_lzdia;
   }
+  else if (!strcmp(transition_name, "samultid_space")){
+    hopper->func_transition_probability = sh_transition_samultid_space;
+  }
+  else if (!strcmp(transition_name, "samultid_time")){
+    hopper->func_transition_probability = sh_transition_samultid_time;
+  }
   hopper->func_hop = sh_hopper_hop; 
 
   return hopper;
@@ -61,13 +67,13 @@ void sh_hopper_hop(struct Particle *part, struct Hopper *hopper,
       double k;
       // if hopped from the lower to the higher energy level
       if(part->state){
-        part->pot_new = pot->func_potup(pot, part->x, odeint->dim);
-        pot->func_gradup(pot, part->pot_grad, part->x, odeint->dim);
+        part->pot_new = pot->func_potup(pot, part->x_new, odeint->dim);
+        pot->func_gradup(pot, part->pot_grad, part->x_new, odeint->dim);
         k = sqrt(1 - 4 * part->rho_curr / pow(norm_l2(part->p, odeint->dim), 2) );
       }
       else{
-        part->pot_new = pot->func_potdown(pot, part->x, odeint->dim);
-        pot->func_graddown(pot, part->pot_grad, part->x, odeint->dim);
+        part->pot_new = pot->func_potdown(pot, part->x_new, odeint->dim);
+        pot->func_graddown(pot, part->pot_grad, part->x_new, odeint->dim);
         k = sqrt(1 + 4 * part->rho_curr / pow(norm_l2(part->p, odeint->dim), 2) );
       }
       for (int i=0; i<odeint->dim; i++){

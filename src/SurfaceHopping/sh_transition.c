@@ -163,3 +163,42 @@ double sh_transition_sa123(struct Particle *part, struct Potential *pot,
   return exp(- tau/(part->rho_curr * pot->eps) * fabs(2*part->rho_curr / p));
 }
 
+double sh_transition_samultid_space(struct Particle *part, struct Potential *pot,
+                            struct Odeint *odeint){
+  int dim = (int) odeint->dim;
+  
+  double diffl[dim]; 
+  double diffr[dim];
+   
+  for (int i=0; i<dim; i++){
+    diffl[i]= part->x_curr[i] - part->x_old[i];
+    diffr[i]= part->x_new[i] - part->x_curr[i];
+  }
+  double dxl = norm_l2(diffl, dim);
+  double dxr = norm_l2(diffr, dim);
+  // left derivative
+  double dl = (part->rho_curr - part->rho_old)/dxl;
+  // right derivative
+  double dr = (part->rho_new - part->rho_curr)/dxr;
+  // sqrt ..
+  double den = sqrt(fabs(dr - dl) / ((dxr + dxl) / 2));
+  // you can probably re-write this in term of Z, v12 and so on - i.e. 
+  // in terms of diabatic potential
+  double sign = (part->state == 1) ? (1.0) : (-1.0);
+  double p = norm_l2(part->p_curr, odeint->dim); 
+  double k = sqrt(pow(p, 2) + sign * 4*part->rho_curr);
+  
+  return exp(- M_PI * pow(part->rho_curr, 0.5) * fabs(k-p)/ 2 / pot->eps / den);
+}
+
+double sh_transition_samultid_time(struct Particle *part, struct Potential *pot,
+                            struct Odeint *odeint){
+  
+  double den = sqrt(fabs(part->rho_new - 2*part->rho_curr + part->rho_old) / pow(odeint->dt, 2));
+  double sign = (part->state == 1) ? (1.0) : (-1.0);
+  double p = norm_l2(part->p_curr, odeint->dim); 
+  double k = sqrt(pow(p, 2) + sign * 4*part->rho_curr);
+  
+  return exp(- M_PI * pow(part->rho_curr, 0.5) * fabs(k-p)/ 2 / pot->eps / den);
+}
+

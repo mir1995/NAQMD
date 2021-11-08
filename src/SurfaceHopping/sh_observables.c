@@ -50,7 +50,7 @@ void sh_observables_update(struct Observables *observables, struct Particle *par
       observables->e_up += part->pot_curr;
       for (int j=0; j<observables->dim; j++){
         ke_up += pow(part->p[j],2);
-        observables->x_up[j] += part->x[j];
+        observables->x_up[j] += part->x_new[j];
         observables->p_up[j] += part->p[j];
       }
     }
@@ -59,7 +59,7 @@ void sh_observables_update(struct Observables *observables, struct Particle *par
       observables->e_down += part->pot_curr;
       for (int j=0; j<observables->dim; j++){
         ke_down += pow(part->p[j],2);
-        observables->x_down[j] += part->x[j];
+        observables->x_down[j] += part->x_new[j];
         observables->p_down[j] += part->p[j];
       }
     }

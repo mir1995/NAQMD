@@ -9,7 +9,7 @@
 #include <time.h> // srand(time(0))
 #include "../../setup.h" 
 
-#define GAMMA 3
+#define GAMMA 0
 #define EPS 0.01
 #define DIM 2
 
@@ -32,13 +32,13 @@ int main(int argc, char *argv[]){
   dim = DIM; 
   t = 6, dt = 0.001;
   q[0]=5*sqrt(EPS), q[1]=0.5*sqrt(EPS), p[0]=0, p[1]=0;
-  npart = pow(10,3); // given that you know the convergence rate of the 
+  npart = atoi(argv[1]); // given that you know the convergence rate of the 
   // two methods, what is the corresponding number of points that 
   // accuracy
   s = 1;
   param[0] = EPS;
   param[3] = GAMMA;
-  char *rate = argv[1];
+  char *rate = argv[2];
   /*
    *  PRINT SIMULATION PARAMETERS
   */
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]){
   struct Hopper *hopper = sh_hopper_new(rate);
 
   char filename[200];
-  sprintf(filename, "./data/observables_npart%d_rate%s.txt", npart, rate); 
+  sprintf(filename, "./data/observables_gamma%dseed%d_npart%d_rate%s.txt", GAMMA, s, npart, rate); 
   file = fopen(filename, "w"); 
 
 
@@ -126,10 +126,7 @@ int main(int argc, char *argv[]){
           );
     }
   }
-  printf("%d\n", npart);
   
   fclose(file);
-  #ifdef ALTO
-  #endif
   return 0;
 }
