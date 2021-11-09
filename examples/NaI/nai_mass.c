@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
   param[0] = EPS;
   param[1] = DELTA;
   param[2] = ALPHA;
-  npart = pow(10,7);
+  npart = pow(10,5);
   s = 1;
   /*
    *  PRINT SIMULATION PARAMETERS
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
   /*
    *  GENERATE ARRAY FOR PARTICLES, INITIALISE SOLVER AND POTENTIAL
    */
-  struct Particle *particles = sh_particles_create(pow(10,7), dim); 
+  struct Particle *particles = sh_particles_create(pow(10,5), dim); 
   struct Potential *pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
                                               &v_zd, &v_v12d, &v_zdd, &v_v12dd,
                                               &get_tau, "NaI", param);
@@ -88,15 +88,15 @@ int main(int argc, char *argv[]){
   double x_c[1] = {13.27801894097567};
   
 
-  for (int i=0; i< (int) (npart/pow(10,7)); i++){
-    sh_wigner_fill(particles, q, p, sqrt(EPS/2), pow(10,7), dim);  
-    sh_particle_potential_init(particles, pot, pow(10,7), dim);// initialise particle values - potential, gradient, level ...
+  for (int i=0; i< (int) (npart/pow(10,5)); i++){
+    sh_wigner_fill(particles, q, p, sqrt(EPS/2), pow(10,5), dim);  
+    sh_particle_potential_init(particles, pot, pow(10,5), dim);// initialise particle values - potential, gradient, level ...
 
     struct Particle *part = particles; // come up with a better structure than a linked list
-    for(unsigned int i=0; i<pow(10,7); i++, part++){
+    for(unsigned int i=0; i<pow(10,5); i++, part++){
       // energy conservation
       part->p_curr[0] = sqrt(pow(part->p[0], 2) + \
-          2 * (pot->func_potup(pot, part->x, 1) - pot->func_potup(pot, x_c, 1)));
+          2 * (pot->func_potup(pot, part->x_new, 1) - pot->func_potup(pot, x_c, 1)));
       part->x_curr[0] = x_c[0];
       part->rho_curr = DELTA;
       double pr = ((double)rand() / RAND_MAX); 
