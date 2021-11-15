@@ -5,7 +5,7 @@
 
 void sh_wigner_fill(struct Particle *ptr,
                     double q, double p, double std, 
-                    int npart, int dim){
+                    long int npart, int dim){
     // Box-Muller generates two samples
     // you might want to pass in two samples
     // the loop is a tod odd because of the way 

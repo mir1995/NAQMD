@@ -34,8 +34,8 @@ int main(int argc, char *argv[]){
   param[0] = EPS;
   param[1] = DELTA;
   param[2] = ALPHA;
-  npart = pow(10,10);
-  s = 1;
+  npart = pow(10,11);
+  s = atoi(argv[1]);
   /*
    *  PRINT SIMULATION PARAMETERS
   */

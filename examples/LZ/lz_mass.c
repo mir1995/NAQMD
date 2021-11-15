@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
   s = 1;
   param[0] = EPS;
   param[2] = ALPHA;
-  npart = pow(10,10);
+  npart = pow(10,11);
   param[1] = atof(argv[1]); // delta
   //char *rate = argv[2];
   /*

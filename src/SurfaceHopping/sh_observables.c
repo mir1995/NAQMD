@@ -4,7 +4,7 @@
 
 
 
-struct Observables *sh_observables_new(unsigned int npart, unsigned int dim){
+struct Observables *sh_observables_new(long int npart, unsigned int dim){
   struct Observables *observables = malloc(sizeof(struct Observables));
   observables->mass_up = 0;
   observables->mass_down = 0;

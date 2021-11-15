@@ -52,14 +52,14 @@ struct Hopper{
 struct Particle    *sh_particles_create(int dim, int npart); // allocate mem for n particles
 struct Particle    *sh_particle_new(int dim); // allocate mem for n particles - I do not think linked list is efficient
 struct Particle    *sh_particle_add(int dim, struct Particle *particles); // allocate mem for n particles
-struct Particle    *sh_sample_wigner(int dim, int npart); // allocate mem for n particles
+struct Particle    *sh_sample_wigner(int dim, long int npart); // allocate mem for n particles
 void                sh_particle_set_pointers(struct Particle *ptr, int dim); // allocates memory for particle_t
 void                sh_particle_destroy(struct Particle *ptr); // free memory
 
 
 /* ---------- Initialise Wigner samples --------- */
 
-void        sh_wigner_fill(struct Particle *ptr, double q, double p, double std, int npart, int dim);
+void        sh_wigner_fill(struct Particle *ptr, double q, double p, double std, long int npart, int dim);
 
 
 /* ---------- Update particle data --------- */
@@ -71,7 +71,7 @@ void        sh_particle_potential_update(struct Particle *ptr, struct Potential 
 
 /* ---------- Construct observables structure--------- */
 
-struct Observables *sh_observables_new(unsigned int npart, unsigned int dim);
+struct Observables *sh_observables_new(long int npart, unsigned int dim);
 void sh_observables_update(struct Observables *observables, struct Particle *particles, unsigned int dim);
 
 
