@@ -32,8 +32,8 @@ int main(int argc, char *argv[]){
   s = 1;
   param[0] = EPS;
   param[2] = ALPHA;
-  npart = pow(10,10);
-  param[1] = atof(argv[1]); // delta
+  npart = atof(argv[1]); //pow(10,10);
+  param[1] = atof(argv[2]); // delta
   //char *rate = argv[2];
   /*
    *  PRINT SIMULATION PARAMETERS
@@ -79,16 +79,10 @@ int main(int argc, char *argv[]){
    */
 
   
-  long int count_lzdia = 0; // count number of particles which have transitioned
   long int count_lzadia = 0;
   long int count_sa = 0;
-  long int count_sa1 = 0;
   long int count_sa2 = 0;
   long int count_sa3 = 0;
-  long int count_sa12 = 0;
-  long int count_sa13 = 0;
-  long int count_sa23 = 0;
-  long int count_sa123 = 0;
   // the crossing is at x = 0
   double x_c[1] = {0};
   for (int i=0; i< (int) npart/pow(10,7); i++){
@@ -101,17 +95,11 @@ int main(int argc, char *argv[]){
           2 * (pot->func_potup(pot, part->x, 1) - pot->func_potup(pot, x_c, 1)));
       part->x_curr[0] = x_c[0];
       double pr = (double)rand() / RAND_MAX; 
-      if (sh_transition_lzdia(part, pot, solver)>= pr){ 
-        count_lzdia += 1;
-      }
       if (sh_transition_lzadia(part, pot, solver)>= pr){ 
         count_lzadia += 1;
       }
       if (sh_transition_sa(part, pot, solver)>= pr){ 
         count_sa += 1;
-      }
-      if (sh_transition_sa1(part, pot, solver)>= pr){ 
-        count_sa1 += 1;
       }
       if (sh_transition_sa2(part, pot, solver)>= pr){ 
         count_sa2 += 1;
@@ -119,30 +107,12 @@ int main(int argc, char *argv[]){
       if (sh_transition_sa3(part, pot, solver)>= pr){ 
         count_sa3 += 1;
       }
-      if (sh_transition_sa12(part, pot, solver)>= pr){ 
-        count_sa12 += 1;
-      }
-      if (sh_transition_sa13(part, pot, solver)>= pr){ 
-        count_sa13 += 1;
-      }
-      if (sh_transition_sa23(part, pot, solver)>= pr){ 
-        count_sa23 += 1;
-      }
-      if (sh_transition_sa123(part, pot, solver)>= pr){ 
-        count_sa123 += 1;
-      }
       part = part->next;
     }
   }
-  fprintf(file, "%s \t %.17g \t %.17g \n", "lz_dia", param[1], count_lzdia * 1.0 / npart);
   fprintf(file, "%s \t %.17g \t %.17g \n", "lz_adia", param[1], count_lzadia * 1.0 / npart);
   fprintf(file, "%s \t %.17g \t %.17g \n", "sa", param[1], count_sa * 1.0 / npart);
   fprintf(file, "%s \t %.17g \t %.17g \n", "sa1", param[1], count_sa1 * 1.0 / npart);
   fprintf(file, "%s \t %.17g \t %.17g \n", "sa2", param[1], count_sa2 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \t %.17g \n", "sa3", param[1], count_sa3 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \t %.17g \n", "sa12", param[1], count_sa12 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \t %.17g \n", "sa13", param[1], count_sa13 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \t %.17g \n", "sa23", param[1], count_sa23 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \t %.17g \n", "sa123", param[1], count_sa123 * 1.0 / npart);
   return 0;
 }
