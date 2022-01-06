@@ -2,6 +2,6 @@
 #define SETUP_DOT_H 
 
 // define dimension of problem for memory allocation purposes
-#define DIM 1
+#define DIM 2 
 
 #endif
