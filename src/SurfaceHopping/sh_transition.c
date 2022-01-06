@@ -163,42 +163,50 @@ double sh_transition_sa123(struct Particle *part, struct Potential *pot,
   return exp(- tau/(part->rho_curr * pot->eps) * fabs(2*part->rho_curr / p));
 }
 
-double sh_transition_samultid_space(struct Particle *part, struct Potential *pot,
+double sh_transition_sa3multid(struct Particle *part, struct Potential *pot,
                             struct Odeint *odeint){
   int dim = (int) odeint->dim;
+  double *grad_zd = (double *)malloc(dim * sizeof(double));
+  double *grad_v12d = (double *)malloc(dim * sizeof(double));
+  double *grad_zdd = (double *)malloc((dim * dim) * sizeof(double));
+  double *grad_v12dd = (double *)malloc((dim * dim) * sizeof(double));
+  double a=0,b=0,c=0,d=0; 
   
-  double diffl[dim]; 
-  double diffr[dim];
-   
+  pot->func_zd(pot, part->x_curr, grad_zd, dim); 
+  pot->func_v12d(pot, part->x_curr, grad_v12d, dim);
+  pot->func_zdd(pot, part->x_curr, grad_zdd, dim); 
+  pot->func_v12dd(pot, part->x_curr, grad_v12dd, dim);
+ 
+  double v1[dim], v2[dim];
   for (int i=0; i<dim; i++){
-    diffl[i]= part->x_curr[i] - part->x_old[i];
-    diffr[i]= part->x_new[i] - part->x_curr[i];
+    v1[i]=0;
+    v2[i]=0;
+    for (int j=0; j<dim; j++){
+      v1[i] += grad_zdd[j + (i*dim)] * part->p_curr[j]; 
+      v2[i] += grad_v12dd[j + (i*dim)] * part->p_curr[j]; 
+    }
   }
-  double dxl = norm_l2(diffl, dim);
-  double dxr = norm_l2(diffr, dim);
-  // left derivative
-  double dl = (part->rho_curr - part->rho_old)/dxl;
-  // right derivative
-  double dr = (part->rho_new - part->rho_curr)/dxr;
-  // sqrt ..
-  double den = sqrt(fabs(dr - dl) / ((dxr + dxl) / 2));
-  // you can probably re-write this in term of Z, v12 and so on - i.e. 
-  // in terms of diabatic potential
-  double sign = (part->state == 1) ? (1.0) : (-1.0);
-  double p = norm_l2(part->p_curr, odeint->dim); 
-  double k = sqrt(pow(p, 2) + sign * 4*part->rho_curr);
-  
-  return exp(- M_PI * pow(part->rho_curr, 0.5) * fabs(k-p)/ 2 / pot->eps / den);
-}
+  for (int i=0; i<dim; i++){
+    a+= grad_zd[i] *  part->p_curr[i]; // r1 c1
+    b+= grad_v12d[i] *  part->p_curr[i]; // r2 c1
+    // check the following but it should be correct 
+    // implementation
+    c+= v1[i] * part->p_curr[i]; 
+    d+= v2[i] * part->p_curr[i]; 
+  }
+  double z = sqrt(pow(a, 2) + pow(b, 2) +\
+      pot->func_z(pot, part->x_curr, dim) * c + \
+      pot->func_v12(pot, part->x_curr, dim) * d);
+ 
 
-double sh_transition_samultid_time(struct Particle *part, struct Potential *pot,
-                            struct Odeint *odeint){
-  
-  double den = sqrt(fabs(part->rho_new - 2*part->rho_curr + part->rho_old) / pow(odeint->dt, 2));
-  double sign = (part->state == 1) ? (1.0) : (-1.0);
-  double p = norm_l2(part->p_curr, odeint->dim); 
-  double k = sqrt(pow(p, 2) + sign * 4*part->rho_curr);
-  
-  return exp(- M_PI * pow(part->rho_curr, 0.5) * fabs(k-p)/ 2 / pot->eps / den);
-}
+  free(grad_zd); 
+  free(grad_v12d); 
+  free(grad_zdd); 
+  free(grad_v12dd); 
 
+  double p = norm_l2(part->p_curr, odeint->dim); 
+  double sign = (part->state == 1) ? (1.0) : (-1.0);
+  double k = sqrt(pow(p, 2) + sign * 4*part->rho_curr);
+
+  return exp(- M_PI / 2 / pot->eps * part->rho_curr * fabs(k - p) / z ); 
+}

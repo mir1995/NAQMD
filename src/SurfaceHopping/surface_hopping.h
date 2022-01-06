@@ -95,8 +95,7 @@ double      sh_transition_sa12(struct Particle *part, struct Potential *pot, str
 double      sh_transition_sa13(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
 double      sh_transition_sa23(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
 double      sh_transition_sa123(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
-double      sh_transition_samultid_space(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
-double      sh_transition_samultid_time(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
+double      sh_transition_sa3multid(struct Particle *part, struct Potential *pot, struct Odeint *odeint);
 
 #endif /* SURFACE_HOPPING_DOT_H */
 

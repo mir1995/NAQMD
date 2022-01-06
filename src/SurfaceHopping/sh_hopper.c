@@ -39,11 +39,8 @@ struct Hopper *sh_hopper_new(char* transition_name){
   else if (!strcmp(transition_name, "lzdia")){
     hopper->func_transition_probability = sh_transition_lzdia;
   }
-  else if (!strcmp(transition_name, "samultid_space")){
-    hopper->func_transition_probability = sh_transition_samultid_space;
-  }
-  else if (!strcmp(transition_name, "samultid_time")){
-    hopper->func_transition_probability = sh_transition_samultid_time;
+  else if (!strcmp(transition_name, "sa3multid")){
+    hopper->func_transition_probability = sh_transition_sa3multid;
   }
   hopper->func_hop = sh_hopper_hop; 
 

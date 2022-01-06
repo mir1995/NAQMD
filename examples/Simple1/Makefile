@@ -5,11 +5,19 @@ ODE_DIR = ../../src/Odeint
 AUX_DIR = ../../src/Auxiliary
 OBJ_DIR = ./Object
 
+<<<<<<< HEAD
 EXE = simple1_mass # simple1_dynamics
 EXE = simple1_dynamics # simple1_dynamics
 # should not be a problem # it would be good to keep a separate file with the dependencies
 SRCS = $(wildcard $(EXE).c $(SH_DIR)/*.c $(POT_DIR)/potential.c $(POT_DIR)/pot_simple1.c $(ODE_DIR)/*.c $(AUX_DIR)/*.c) 
 OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS)) simple1_dynamics.c )  
+=======
+EXE = simple1_rate # simple1_dynamics
+EXE = simple1_dynamics # simple1_dynamics
+# should not be a problem # it would be good to keep a separate file with the dependencies
+SRCS = $(wildcard $(EXE).c $(SH_DIR)/*.c $(POT_DIR)/potential.c $(POT_DIR)/pot_simple1.c $(ODE_DIR)/*.c $(AUX_DIR)/*.c) 
+OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS)) simple1_dynamics.c ) # jahn_teller_mass.c 
+>>>>>>> 50d00134c26167b13838d3d78d959987f89fdf42
 
 vpath %.c $(SIMPLE_DIR) $(SH_DIR) $(POT_DIR) $(ODE_DIR) $(AUX_DIR)
 
