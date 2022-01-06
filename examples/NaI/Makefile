@@ -5,10 +5,12 @@ ODE_DIR = ../../src/Odeint
 AUX_DIR = ../../src/Auxiliary
 OBJ_DIR = ./Object
 
-EXE = nai_mass # nai_dynamics
+#EXE = nai_mass # nai_dynamics
+#EXE = nai_rate # nai_dynamics
+EXE = nai_dynamics2# nai_dynamics
 # should not be a problem # it would be good to keep a separate file with the dependencies
 SRCS = $(wildcard $(EXE).c $(SH_DIR)/*.c $(POT_DIR)/potential.c $(POT_DIR)/pot_nai.c $(ODE_DIR)/*.c $(AUX_DIR)/*.c) 
-OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS)) nai_mass.c ) 
+OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS)) nai_dynamics2.c ) 
 
 vpath %.c $(NAI_DIR) $(SH_DIR) $(POT_DIR) $(ODE_DIR) $(AUX_DIR)
 

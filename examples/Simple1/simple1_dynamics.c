@@ -10,8 +10,8 @@
 #include <time.h> // srand(time(0))
 
 
-#define ALPHA 0.05 // might need vary your parameter space
-#define DELTA 0.5 
+#define ALPHA 0.5 // might need vary your parameter space
+#define DELTA 0.6 
 #define EPS 0.1
 
 int main(int argc, char *argv[]){
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
   dim = DIM; 
   q[0] = -10, p[0] = 4;
   t = 20/p[0], dt = 1.0 / 100 / p[0];
-  npart = pow(10,6);
+  npart = pow(10,7);
   s = 1;
   param[0] = EPS;
   param[1] = DELTA;
@@ -124,6 +124,8 @@ int main(int argc, char *argv[]){
           );
     }
   }
+#ifdef ALTO
+#endif
   
   fclose(file);
   return 0;
