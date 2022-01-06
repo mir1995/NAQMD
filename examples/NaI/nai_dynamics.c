@@ -57,11 +57,11 @@ int main(int argc, char *argv[]){
   /*
    *  GENERATE ARRAY FOR PARTICLES, INITIALISE SOLVER AND POTENTIAL
    */
-  struct Particle *particles = sh_particles_create(dim, npart); // it's a weird data struct - to improve
+  struct Particle *particles = sh_particles_create(npart, dim); // it's a weird data struct - to improve
   struct Odeint *solver = odeint_new(t, dt, dim, "lietrotter_symplectic");
   struct Potential *pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
                                               &v_zd, &v_v12d, &v_zdd, &v_v12dd,
-                                              &dd_v_up, &dd_v_down, &get_tau,
+                                              &get_tau,
                                               "NaI", param);
   struct Observables *observables = sh_observables_new(npart, dim);
   struct Hopper *hopper = sh_hopper_new(rate);
