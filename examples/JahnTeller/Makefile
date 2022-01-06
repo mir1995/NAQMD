@@ -5,6 +5,7 @@ ODE_DIR = ../../src/Odeint
 AUX_DIR = ../../src/Auxiliary
 OBJ_DIR = ./Object
 
+#EXE = jahn_teller_rate # nai_dynamics
 EXE = jahn_teller_dynamics # nai_dynamics
 # should not be a problem # it would be good to keep a separate file with the dependencies
 SRCS = $(wildcard $(EXE).c $(SH_DIR)/*.c $(POT_DIR)/potential.c $(POT_DIR)/pot_jahn_teller.c $(ODE_DIR)/*.c $(AUX_DIR)/*.c) 
