@@ -7,51 +7,46 @@
 #include "../../src/Odeint/odeint.h"
 #include "../../src/Potential/potential.h"
 #include <time.h> // srand(time(0))
+#include "../../setup.h" 
 
 
-// alpha is used in the approximation to the transition rate
-#define ALPHA 0.002669794983146837
-#define DELTA 0.002010562925688143 
-#define EPS 0.014654629670711006
+#define GAMMA 0 
+#define EPS 0.01
 
 int main(int argc, char *argv[]){
     
   /*
    * INITIALISE PARAMETERS
    */
-  int npart;
+  long int npart;
   int dim, t, s;
-  double dt, q, p;
-  double param[3];
+  double dt, q[DIM], p[DIM];
+  double param[4];
   FILE *file;
   
   /*
    * SET PARAMETERS
    */
   
-  dim =1; 
-  t = 80, dt = 0.01;
-  q = 5, p = 0;
-  npart = pow(10,7);
-  s = argv[2];
+  dim = DIM; 
+  t = 2, dt = 0.01;
+  q[0] = 5*sqrt(EPS), q[1] = 0.5*sqrt(EPS), p[0]=0, p[1]=0;
+  npart = pow(10,6);
+  s = atoi(argv[2]);
   param[0] = EPS;
-  param[1] = DELTA;
-  param[2] = ALPHA;
+  param[3] = GAMMA;
   char *rate = argv[1];
   /*
    *  PRINT SIMULATION PARAMETERS
   */
 
   printf(" ***************************************************************\n");
-  printf(" NaI case study: Single Switch Surface Hopping  \n");
-  printf("---> NPART     :  %d\n",npart);
+  printf(" Jahn Teller: Single Switch Surface Hopping  \n");
+  printf("---> NPART     :  %ld\n",npart);
   printf("---> DIM       :  %d\n",dim);
   printf("---> T         :  %d\n", t);
   printf("---> dt        :  %.4f\n", dt);
-  printf("---> q         :  %.4f\n", q);
-  printf("---> p         :  %.4f\n", p);
-  printf("---> POTENTIAL :  NaI \n"); 
-  printf("---> RATE      :  %s\n", rate);
+  printf("---> POTENTIAL :  JahnTeller \n"); 
   printf(" ***************************************************************\n");
 
   /*
@@ -61,13 +56,12 @@ int main(int argc, char *argv[]){
   struct Odeint *solver = odeint_new(t, dt, dim, "lietrotter_symplectic");
   struct Potential *pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
                                               &v_zd, &v_v12d, &v_zdd, &v_v12dd,
-                                              &get_tau,
-                                              "NaI", param);
+                                              &get_tau, "JahnTeller", param);
   struct Observables *observables = sh_observables_new(npart, dim);
   struct Hopper *hopper = sh_hopper_new(rate);
 
   char filename[200];
-  sprintf(filename, "./data/observables_npart%d_rate%s.txt", npart, rate); 
+  sprintf(filename, "./data/observables_npart%ld_gamma%d_rate%s_seed%d.txt", npart, (int) GAMMA, rate, s); 
   file = fopen(filename, "w"); 
 
 
@@ -82,7 +76,7 @@ int main(int argc, char *argv[]){
   srand(s); // INITIALISE SEED // what is the actual variance...?
   sh_wigner_fill(particles, q, p, sqrt(EPS/2), npart, dim);
   
-  sh_particle_potential_init(particles, pot, dim);// initialise particle values - potential, gradient, level ...
+  sh_particle_potential_init(particles, pot, npart, dim);// initialise particle values - potential, gradient, level ...
 
   /*
    *  SIMULATION: STEP - CHECK FOR AVOIDED CROSSING - UPDATE POTENTIAL - STEP
@@ -93,7 +87,7 @@ int main(int argc, char *argv[]){
   printf("   Surface Particle Hopping Simulation  \n");
   printf(" ***************************************************************\n");
   
-  fprintf(file, "itr \t pos_up \t pos_down \t \
+  fprintf(file, "t \t pos_up \t pos_down \t \
       mom_up \t mom_down \t ke_up \t ke_down \t \
       e_up \t e_down \t mass_up \t mass_down \n");
 
@@ -101,22 +95,21 @@ int main(int argc, char *argv[]){
 
     struct Particle *part = particles; // come up with a better structure than a linked list
 
-    while(part != NULL){
+    for(long int i=0; i<npart; i++, part++){
       // 2) STEP SOLUTION IN TIME 
       solver->func_dostep(solver, part, pot);
       // 3) UPDATE PARTICLE INFORMATION 
       sh_particle_potential_update(part, pot, dim);
       // 4) CALL HOPPER 
       hopper->func_hop(part, hopper, pot, solver);
-      part = part->next;
     }
     if(itr % (int)(((t*1.)/dt)/40) == 0){
-      sh_observables_update(observables, particles, dim);
-      fprintf(file, "%d \t %.17g \t %.17g \t  %.17g \
+      sh_observables_update(observables, particles);
+      fprintf(file, "%.17g \t %.17g \t %.17g \t  %.17g \
                           \t %.17g \t %.17g \t %.17g \
                           \t %.17g \t %.17g \t %.17g \
                           \t %.17g \n",
-          itr,
+          itr * dt,
           observables->x_up[0], observables->x_down[0],
           observables->p_up[0], observables->p_down[0],
           observables->ke_up, observables->ke_down,

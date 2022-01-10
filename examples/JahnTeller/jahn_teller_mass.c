@@ -10,20 +10,22 @@
 #include <time.h> // srand(time(0))
 
 
-// alpha is used in the approximation to the transition rate
-#define ALPHA 0.002669794983146837
-#define DELTA 0.002010562925688143 
-#define EPS 0.014654629670711006
+#define GAMMA 3
+#define ALPHA 0.5 
+#define DELTA 0.5
+#define EPS 0.01
+#define DIM 2
 
 int main(int argc, char *argv[]){
     
   /*
    * INITIALISE PARAMETERS
    */
-  long int npart;
-  int dim, s;
+  unsigned long int npart; 
+  unsigned int dim;
+  int s;
   double q[DIM], p[DIM];
-  double param[3];
+  double param[4];
   FILE *file;
   
   /*
@@ -31,18 +33,20 @@ int main(int argc, char *argv[]){
    */
   
   dim =DIM; 
-  q[0] = 5, p[0] = 0;
+  q[0]=5*sqrt(EPS), q[1]=0.5*sqrt(EPS), p[0]=0, p[1]=0;
+  npart = pow(10,4); // given that you know the convergence rate of the 
+  // 
   param[0] = EPS;
   param[1] = DELTA;
   param[2] = ALPHA;
-  npart = pow(10,5);
+  param[3] = GAMMA;
   s = 1;
   /*
    *  PRINT SIMULATION PARAMETERS
   */
 
   printf(" ***************************************************************\n");
-  printf(" NaI case study: No dynamics - estimating number of particles  \n");
+  printf(" Jahn Teller: No dynamics - estimating number of particles  \n");
   printf("---> NPART     :  %ld\n",npart);
   printf("---> q         :  %.4f\n", q[0]);
   printf("---> p         :  %.4f\n", p[0]);
@@ -52,10 +56,10 @@ int main(int argc, char *argv[]){
   /*
    *  GENERATE ARRAY FOR PARTICLES, INITIALISE SOLVER AND POTENTIAL
    */
-  struct Particle *particles = sh_particles_create(pow(10,5), dim); 
+  struct Particle *particles = sh_particles_create(pow(10,4), dim); 
   struct Potential *pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
                                               &v_zd, &v_v12d, &v_zdd, &v_v12dd,
-                                              &get_tau, "NaI", param);
+                                              &get_tau, "JahnTeller", param);
   struct Odeint *solver = odeint_new(20, 0.001, 1, "lietrotter_symplectic"); // not needed
   
   char filename[200];
@@ -76,72 +80,40 @@ int main(int argc, char *argv[]){
   srand(s); // INITIALISE SEED // what is the actual variance...?
   int count_lzdia = 0; // count number of particles which have transitioned
   int count_lzadia = 0;
-  int count_sa = 0;
-  int count_sa1 = 0;
-  int count_sa2 = 0;
-  int count_sa3 = 0;
-  int count_sa12 = 0;
-  int count_sa13 = 0;
-  int count_sa23 = 0;
-  int count_sa123 = 0;
   // the crossing has been pre-computed
-  double x_c[1] = {13.27801894097567};
+  double x_c[2];
+  x_c[0] = 0;
+  x_c[1] = 0;
   
 
-  for (int i=0; i< (int) (npart/pow(10,5)); i++){
-    sh_wigner_fill(particles, q, p, sqrt(EPS/2), pow(10,5), dim);  
-    sh_particle_potential_init(particles, pot, pow(10,5), dim);// initialise particle values - potential, gradient, level ...
-
+  for (int i=0; i< (int) (npart/pow(10,4)); i++){
+    sh_wigner_fill(particles, q, p, sqrt(EPS/2), pow(10,4), dim);  
+    sh_particle_potential_init(particles, pot, pow(10,4), dim);// initialise particle values - potential, gradient, level ...
     struct Particle *part = particles; // come up with a better structure than a linked list
-    for(unsigned int i=0; i<pow(10,5); i++, part++){
+    for(unsigned int i=0; i<pow(10,4); i++, part++){
       // energy conservation
+      // the following is missing something
       part->p_curr[0] = sqrt(pow(part->p[0], 2) + \
-          2 * (pot->func_potup(pot, part->x_new, 1) - pot->func_potup(pot, x_c, 1)));
+          2 * (pot->func_potup(pot, part->x, dim) - pot->func_potup(pot, x_c, dim)));
+      part->p_curr[1] = 0; 
       part->x_curr[0] = x_c[0];
-      part->rho_curr = DELTA;
+      part->x_curr[1] = x_c[1];
+      part->rho_curr = pot->func_rho(pot, x_c, dim);
+      printf("%.17g\n", part->rho_curr); 
       double pr = ((double)rand() / RAND_MAX); 
       if (sh_transition_lzdia(part, pot, solver)>= pr){ 
+        //printf("%.17g\n", sh_transition_lzdia(part, pot, solver)); 
         count_lzdia += 1;
       }
+      /*
       if (sh_transition_lzadia(part, pot, solver)>= pr){ 
         count_lzadia += 1;
       }
-      if (sh_transition_sa(part, pot, solver)>= pr){ 
-        count_sa += 1;
-      }
-      if (sh_transition_sa1(part, pot, solver)>= pr){ 
-        count_sa1 += 1;
-      }
-      if (sh_transition_sa2(part, pot, solver)>= pr){ 
-        count_sa2 += 1;
-      }
-      if (sh_transition_sa3(part, pot, solver)>= pr){ 
-        count_sa3 += 1;
-      }
-      if (sh_transition_sa12(part, pot, solver)>= pr){ 
-        count_sa12 += 1;
-      }
-      if (sh_transition_sa13(part, pot, solver)>= pr){ 
-        count_sa13 += 1;
-      }
-      if (sh_transition_sa23(part, pot, solver)>= pr){ 
-        count_sa23 += 1;
-      }
-      if (sh_transition_sa123(part, pot, solver)>= pr){ 
-        count_sa123 += 1;
-      }
+      */
     }
   }
   fprintf(file, "%s \t %.17g \n", "lz_dia", count_lzdia * 1.0 / npart);
   fprintf(file, "%s \t %.17g \n", "lz_adia", count_lzadia * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \n", "sa", count_sa * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \n", "sa1", count_sa1 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \n", "sa2", count_sa2 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \n", "sa3", count_sa3 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \n", "sa12", count_sa12 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \n", "sa13", count_sa13 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \n", "sa23", count_sa23 * 1.0 / npart);
-  fprintf(file, "%s \t %.17g \n", "sa123", count_sa123 * 1.0 / npart);
   return 0;
 }
 

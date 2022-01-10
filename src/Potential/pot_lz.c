@@ -6,9 +6,6 @@
  * The Landau-Zener type potential is given in ?
  */
 
-
-
-
 /* Handles construction of potential in the adiabatic representation */
 
 double v_z(struct Potential *pot, double *x, unsigned int dim){
@@ -46,8 +43,4 @@ double v_traced(struct Potential *pot, double *x, unsigned int dim){
 double get_tau(struct Potential *pot){
   return M_PI * pow(pot->delta,2) / 2 / pot->alpha;
 }
-// the following are still to compute
-void dd_v_up(struct Potential *pot, double *dd_v, double *x, unsigned int dim){}
-
-void dd_v_down(struct Potential *pot, double *dd_v, double *x, unsigned int dim){}
 

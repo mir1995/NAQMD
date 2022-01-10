@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "surface_hopping.h"
+#include "../Auxiliary/metrics.h"
 #include "../Potential/potential.h"
 
 struct Hopper *sh_hopper_new(char* transition_name){
@@ -38,29 +39,42 @@ struct Hopper *sh_hopper_new(char* transition_name){
   else if (!strcmp(transition_name, "lzdia")){
     hopper->func_transition_probability = sh_transition_lzdia;
   }
+  else if (!strcmp(transition_name, "sa3multid")){
+    hopper->func_transition_probability = sh_transition_sa3multid;
+  }
   hopper->func_hop = sh_hopper_hop; 
 
   return hopper;
 }
 
 /* Single Switch Surface Hopping */
-void sh_hopper_hop(struct Particle *particle, struct Hopper *hopper, 
-                    struct Potential *potential, struct Odeint *odeint){
+void sh_hopper_hop(struct Particle *part, struct Hopper *hopper, 
+                    struct Potential *pot, struct Odeint *odeint){
   
-  if ( (particle->rho_new - particle->rho_curr) * (particle->rho_old - particle->rho_curr) < 0){
-    double p = hopper->func_transition_probability(particle, potential, odeint); // particle location and transition rate should suffice
-    if (p >= ((double)rand() / RAND_MAX)){ // why stochastic and not deterministic
+  if ( (part->rho_new - part->rho_curr) * (part->rho_old - part->rho_curr) > 0){
+    // exit function if particle's momentum doesn't have enough momentum
+    if (!(part->state) && pow(norm_l2(part->p_curr, odeint->dim),2) - 4*part->rho_curr < 0){return;}
+    // call transition rate
+    double p = hopper->func_transition_probability(part, pot, odeint); 
+    // probabilistic SSSH
+    if (p >= ((double)rand() / RAND_MAX)){ 
       /* change state of particle */
-      particle->state = !(particle->state);
-      /* update potential value new - do I have to for rho as well?? */
-      if(particle->state){
-        particle->pot_new = potential->func_potup(potential, particle->x, 1);
-        potential->func_gradup(potential, particle->pot_grad, particle->x, 1);
+      part->state = !(part->state);
+      // momentum adjustment - re-scaling 
+      double k;
+      // if hopped from the lower to the higher energy level
+      if(part->state){
+        part->pot_new = pot->func_potup(pot, part->x_new, odeint->dim);
+        pot->func_gradup(pot, part->pot_grad, part->x_new, odeint->dim);
+        k = sqrt(1 - 4 * part->rho_curr / pow(norm_l2(part->p, odeint->dim), 2) );
       }
       else{
-        particle->pot_new = potential->func_potdown(potential, particle->x, 1);
-        potential->func_graddown(potential, particle->pot_grad, particle->x, 1);
-        particle->p[0] = sqrt(pow(particle->p_curr[0],2) + 4*potential->delta); // to check
+        part->pot_new = pot->func_potdown(pot, part->x_new, odeint->dim);
+        pot->func_graddown(pot, part->pot_grad, part->x_new, odeint->dim);
+        k = sqrt(1 + 4 * part->rho_curr / pow(norm_l2(part->p, odeint->dim), 2) );
+      }
+      for (int i=0; i<odeint->dim; i++){
+        part->p[i] *= k;
       }
     }
   }

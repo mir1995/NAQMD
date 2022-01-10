@@ -1,9 +1,9 @@
 # linestyles
-set style line 1 lt 1 lc rgb "#A00000" lw 2
-set style line 2 lt 1 lc rgb "#00A000" lw 5 pt 2 ps 0.2
-set style line 3 lt 1 lc rgb "#000004" lw 1 pt 7 ps 0.5 
-set style line 4 lt 1 lc rgb "#0000A0" lw 1 pt 4 ps 1.5
-set style line 5 lt 1 lc rgb "#D0D000" lw 6 pt 7 ps 1.5
+set style line 1 lt 1 lc rgb "#A00000" lw 3 ps 1.5
+set style line 2 lt 1 lc rgb "#00A000" lw 3 pt 2 ps 0.5
+set style line 3 lt 1 lc rgb "#000004" lw 3 pt 7 ps 0.5 
+set style line 4 lt 1 lc rgb "#0000A0" lw 3 pt 4 ps 0.5
+set style line 5 lt 1 lc rgb "#D0D000" lw 3 pt 7 ps 0.5
 set style line 6 lt 1 lc rgb "#00D0D0" lw 6 pt 7 ps 1.5
 set style line 7 lt 1 lc rgb "#B200B2" lw 6 pt 7 ps 1.5
 set style line 12 lc rgb '#808080' lt 0 lw 1
