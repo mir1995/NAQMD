@@ -35,3 +35,4 @@ run: $(EXE)
 
 clean:
 	rm $(OBJ_DIR)/*.o
+

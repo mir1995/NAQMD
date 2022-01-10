@@ -6,6 +6,7 @@
 #include "../../src/SurfaceHopping/surface_hopping.h"
 #include "../../src/Odeint/odeint.h"
 #include "../../src/Potential/potential.h"
+#include "../../src/Auxiliary/metrics.h"
 #include <time.h> // srand(time(0))
 #include "../../setup.h" 
 
@@ -20,7 +21,7 @@ int main(int argc, char *argv[]){
    */
   long int npart;
   int dim, t, s;
-  double dt, q[DIM], p[DIM];
+  double dt, q[DIM], p[DIM], p_temp[DIM];
   double param[4];
   FILE *file;
   
@@ -30,12 +31,18 @@ int main(int argc, char *argv[]){
   
   dim = DIM; 
   t = 2, dt = 0.01;
-  q[0] = 5*sqrt(EPS), q[1] = 0.5*sqrt(EPS), p[0]=0, p[1]=0;
-  npart = pow(10,6);
-  s = atoi(argv[2]);
+  // angle of rotation form initial momentum
+  double theta = 0; //- M_PI / 32 
+  q[0] = 5*sqrt(EPS), q[1] = 0.5*sqrt(EPS);
+  p_temp[0] = - q[0]/norm_l2(q,dim) * 0.5, p_temp[1] = -q[1]/norm_l2(q,dim) * 0.5;
+  p[0] = p_temp[0] * cos(theta) - p_temp[1] * sin(theta);
+  p[1] = p_temp[0] * sin(theta) + p_temp[1] * cos(theta);
+  //p[0]=0, p[1]=0;
+  npart = pow(10,5);
+  s = (argv[2] == NULL) ? 1: atoi(argv[2]);
   param[0] = EPS;
   param[3] = GAMMA;
-  char *rate = argv[1];
+  char *rate = (argv[1] == NULL) ? "lzadia": argv[1];
   /*
    *  PRINT SIMULATION PARAMETERS
   */
@@ -61,7 +68,7 @@ int main(int argc, char *argv[]){
   struct Hopper *hopper = sh_hopper_new(rate);
 
   char filename[200];
-  sprintf(filename, "./data/observables_npart%ld_gamma%d_rate%s_seed%d.txt", npart, (int) GAMMA, rate, s); 
+  sprintf(filename, "./data/observables_npart%ld_gamma%d_rate%s_seed%d_theta%.2f.txt", npart, (int) GAMMA, rate, s, theta);
   file = fopen(filename, "w"); 
 
 
@@ -106,12 +113,14 @@ int main(int argc, char *argv[]){
     if(itr % (int)(((t*1.)/dt)/40) == 0){
       sh_observables_update(observables, particles);
       fprintf(file, "%.17g \t %.17g \t %.17g \t  %.17g \
-                          \t %.17g \t %.17g \t %.17g \
-                          \t %.17g \t %.17g \t %.17g \
-                          \t %.17g \n",
+                          \t %.17g \t %.17g \t %.17g \t %.17g \
+                          \t %.17g \t %.17g \t %.17g \t %.17g \
+                          \t %.17g \t %.17g \t %.17g \n",
           itr * dt,
-          observables->x_up[0], observables->x_down[0],
-          observables->p_up[0], observables->p_down[0],
+          observables->x_up[0], observables->x_up[1], 
+          observables->x_down[0],observables->x_down[1], 
+          observables->p_up[0], observables->p_up[1],  
+          observables->p_down[0], observables->p_down[1], 
           observables->ke_up, observables->ke_down,
           observables->e_up, observables->e_down,
           observables->mass_up, observables->mass_down
