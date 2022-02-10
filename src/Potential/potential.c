@@ -66,7 +66,7 @@ struct Potential    *potential_construct(
     void (*func_v12d)(struct Potential *pot, double *x, double *grad, unsigned int dim),
     void (*func_zdd)(struct Potential *pot, double *x, double *hess, unsigned int dim),
     void (*func_v12dd)(struct Potential *pot, double *x, double *hess, unsigned int dim),
-    double (*func_get_tau)(struct Potential *pot),
+    double complex (*func_get_tau)(struct Potential *pot),
     char* potential_name, double param[]){
   
   struct Potential *pot = malloc(sizeof(struct Potential));
