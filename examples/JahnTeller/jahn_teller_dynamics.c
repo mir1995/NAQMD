@@ -32,13 +32,13 @@ int main(int argc, char *argv[]){
   dim = DIM; 
   t = 2, dt = 0.01;
   // angle of rotation form initial momentum
-  double theta = 0; //- M_PI / 32 
+  double theta = - M_PI / 16; //- M_PI / 32 
   q[0] = 5*sqrt(EPS), q[1] = 0.5*sqrt(EPS);
   p_temp[0] = - q[0]/norm_l2(q,dim) * 0.5, p_temp[1] = -q[1]/norm_l2(q,dim) * 0.5;
   p[0] = p_temp[0] * cos(theta) - p_temp[1] * sin(theta);
   p[1] = p_temp[0] * sin(theta) + p_temp[1] * cos(theta);
   //p[0]=0, p[1]=0;
-  npart = pow(10,5);
+  npart = pow(10,6);
   s = (argv[2] == NULL) ? 1: atoi(argv[2]);
   param[0] = EPS;
   param[3] = GAMMA;
