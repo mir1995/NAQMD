@@ -97,7 +97,7 @@ struct HagedornWaves *hag_project(struct HagedornWaves *params_in, unsigned int 
   params_out->p[0] = params_in->p[0];// this is position
   params_out->Q[0] = params_in->Q[0];
   params_out->P[0] = params_in->P[0];
-  params_out->c  = ( double complex * ) malloc ( n * sizeof ( double complex ) ); // these are pointers so easy to pass
+  params_out->c  = ( double complex * ) malloc ( K * sizeof ( double complex ) ); // these are pointers so easy to pass
 
   /******************************************************************************/
   // Compute weights and nodes of Gauss-Hermite rule 
@@ -136,7 +136,7 @@ struct HagedornWaves *hag_project(struct HagedornWaves *params_in, unsigned int 
   /******************************************************************************/
   for (unsigned int index=0; index < params_out->size; index++){
     evaluate_f(pot, params_in, params_out, 0, index, x, f, n);  
-    params_out->c[index] = pow(M_PI * params_out->eps, - 1.0/4) / params_out->Q[0] * inner_product(w, f, n);
+    params_out->c[index] = pow(M_PI * params_out->eps, - 1.0/4) * pow(params_out->Q[0], -0.5 )* inner_product(w, f, n);
   }
   // return set of parameters for transmitted wavepacket 
   return params_out;// this might not work as the scope end?
