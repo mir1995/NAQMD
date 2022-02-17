@@ -75,8 +75,8 @@ int main ( int argc, char *argv[] )
   double pot_param[4];
   unsigned int n, K, power; // quadrature points, momentum grid points 
   long unsigned int n_points;
-  FILE *file;
-  char fname[200];
+  FILE *file_error, *file_grid;
+  char fname_error[200], fname_grid[200];
 
   
   n = atoi(argv[1]);
@@ -95,7 +95,7 @@ int main ( int argc, char *argv[] )
 
   pot_param[0] = params_in.eps;
   pot_param[2] = 0.5; 
-  pot_param[1] = 0.5; // delta
+  pot_param[1] = 0.5; //  delta
   pot_param[3] = 3; // gamma
   pot = potential_construct(&v_trace, &v_z, &v_v12, &v_traced, 
                             &v_zd, &v_v12d, &v_zdd, &v_v12dd,
@@ -119,6 +119,9 @@ int main ( int argc, char *argv[] )
 */
   params_out = malloc(sizeof(struct HagedornWaves)); 
   params_out = hag_project(&params_in, n, K, pot); 
+  for (unsigned int i=0; i<K; i++){
+    printf("c[%d]=%.17g\n", i, creal(params_out->c[i]) );
+  }
 
 // until we are able to save structs with pointers
   n_points = pow(2,power);
@@ -131,32 +134,37 @@ int main ( int argc, char *argv[] )
   // evaluate superadiabatic wavepacket at a set of points
   hag_superadiabatic_formula(x, f, &params_in, n_points, pot, "constant");
   // evaluate hagedorn wavepacket at a set of points
-  hag_wavepackets_fill(x, f_hag, params_out, n_points); // this turns out to be the problem
+  //hag_wavepackets_fill(x, f_hag, params_out, n_points); // this turns out to be the problem
+  hag_wavepackets_fill(x, f_hag, &params_in, n_points); // this turns out to be the problem
+  
   // print grid values x and difference to a file 
   
-  //sprintf(fname, "data/difference_N%d.txt", n); 
-  sprintf(fname, "data/linear_hagedorn_projection_absolute_error_N%d.txt", power); 
+  sprintf(fname_error, "data/linear_hagedorn_projection_error_K%d.txt", K); 
+  sprintf(fname_grid, "data/difference_K%d.txt", K); 
+  sprintf(fname_grid, "data/wavepacket_crossing_transmitted.txt"); 
   
-  //file = fopen(fname, "w"); 
-  file = fopen(fname, "a+"); 
+  file_grid = fopen(fname_grid, "w"); 
+  file_error = fopen(fname_error, "a+"); 
   
-  //fprintf(file, "p \t (f - f_hag).re  \t (f - f_hag).im\n");
   if (K == 1){
-    fprintf(file, "K \t N \t L2_abs \t L2_rel \n");
+    fprintf(file_error, "K \t N \t L2_abs \t L2_rel \n");
   }
   
-  //for (unsigned int i=0; i<n_points; i++){
-  //  fprintf(file, "%.17g \t %.17g \t %.17g \t %.17g \t %.17g\n", x[i], creal(f[i]), cimag(f[i]), creal(f_hag[i]), cimag(f_hag[i]) );
+  //fprintf(file_grid, "p \t (f - f_hag).re  \t (f - f_hag).im\n");
+  fprintf(file_grid, "p \t +.re  \t +.im \t -.re \t -.im \n");
+  for (unsigned int i=0; i<n_points; i++){
+    //fprintf(file_grid, "%.17g \t %.17g \t %.17g\n", x[i], creal(f[i] - f_hag[i]), cimag(f[i] - f_hag[i]) );
+    fprintf(file_grid, "%.17g \t %.17g \t %.17g \t %.17g \t %.17g \n", x[i], creal(f_hag[i]), cimag(f_hag[i]), creal(f[i]), cimag(f[i]));
     //printf("f[i].re=%.17g \t f_hag.re[i]=%.17g\n", creal(f[i]), creal(f_hag[i]));
-  //}
+  }
   double abs_error = distance_L2(x, f, f_hag, n_points );
   double rel_error = abs_error / norm_L2(x, f, n_points);
-  fprintf(file, "%d \t %d \t %.17g \t %.17g \n", K, n, abs_error, rel_error);
+  fprintf(file_error, "%d \t %d \t %.17g \t %.17g \n", K, n, abs_error, rel_error);
   
   free(x);
   free(f);
   free(f_hag);
-  fclose(file);
+  fclose(file_error);
   timestamp ( );
 }
   /*
