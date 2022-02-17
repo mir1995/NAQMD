@@ -2,8 +2,8 @@ QUAD_DIR = ../src/Quadrature
 HAG_DIR = ../src/Hagedorn
 OBJ_DIR = ./Object
 
-EXE = test_hermite_hagedorn
-SRCS = $(wildcard test_hermite_hagedorn.c $(HAG_DIR)/*.c $(QUAD_DIR)/*.c) 
+EXE = test_gauss_hermite_oscillatory_convergence.c # test_hermite_hagedorn
+SRCS = $(wildcard $(HAG_DIR)/*.c $(QUAD_DIR)/*.c) 
 OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS))) 
 
 vpath %.c $(HAG_DIR) $(QUAD_DIR) 
