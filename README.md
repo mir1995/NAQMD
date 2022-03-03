@@ -1,9 +1,5 @@
 # Non-Adiabatic Quantum Molecular Dynamics 
 
-We are interested in the dynamics of molecules beyond the Born-Oppenheimer approximation. 
+We are interested in the dynamics of molecules beyond the Born-Oppenheimer approximation. Both wavepacket and particle based methods are available within 
+the repository with many model example to test the dynamics. 
 
-### The methods available allow to approximate the solution of quantum observables corresponding to the solution of the following coupled system of TDSEs:
-
-```math
-SE = \frac{\sigma}{\sqrt{n}}
-```
