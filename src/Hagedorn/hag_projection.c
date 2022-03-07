@@ -7,20 +7,22 @@
 # include "hag_superadiabatic.h"
 # include "../Quadrature/hermite_rule.h"
 # include "../Potential/potential.h"
+# include "../Hagedorn/hag_observables.h"
+# include "../../src/Grid/grid.h"
 
 
 static void evaluate_f(struct Potential *pot,
                                 struct HagedornWaves *params_in, 
                                 struct HagedornWaves *params_out,
                                 unsigned int index_in, unsigned int index_out, 
-                                double *x, double complex *f, unsigned int n)
+                                double *x, double complex *f, long unsigned int n)
 {
   double complex h; // clarify the terms
   
   // can think about splitting it into easier tasks
   hag_superadiabatic_formula(x, f, params_in, n, pot, "constant");
   
-  for (unsigned int i=0; i<n; i++){
+  for (long unsigned int i=0; i<n; i++){
       h = hag_wavepackets_polynomial_evaluate((double complex) x[i], params_out, index_out); // evaluate Hagedorn polynomial at index_out
       f[i] = f[i] * h;
   }
@@ -73,17 +75,15 @@ struct HagedornWaves *hag_project(struct HagedornWaves *params_in, unsigned int 
     Michael Redenti
 */
 {
-  double a;
-  double alpha;
-  double b;
-  double beta;
-  int kind;
-  int scale;
-  double *w;
-  double *x;
+  double a, b, alpha, beta;
+  int kind, scale;
+  double *x, *w;
   double complex *f;
   
 
+  w = ( double * ) malloc ( n * sizeof ( double ) ); // your main function could pass these values to a function call
+  x = ( double * ) malloc ( n * sizeof ( double ) ); // these are pointers so easy to pass
+  f = ( double complex * ) malloc ( n * sizeof ( double complex ) ); // these are pointers so easy to pass
   /******************************************************************************/
   // compute the new parameter set ?
   /******************************************************************************/
@@ -93,7 +93,11 @@ struct HagedornWaves *hag_project(struct HagedornWaves *params_in, unsigned int 
   params_out->size = K;
   params_out->eps = params_in->eps;
   params_out->s = params_in->s;
-  params_out->q[0] = sqrt(pow(params_in->q[0],2) + 4*pot->delta); // try and compute it exactly 
+  // energy conservation for new momentum parameter
+  params_out->q[0] = sqrt(pow(params_in->q[0],2) + 4*pot->delta);  
+  // exact computation of new momentum parameter
+  params_out->q[0] = hag_observables_get_mean(x, w, f, params_in, pot, n);  
+  // keep the same position parameter
   params_out->p[0] = params_in->p[0];// this is position
   params_out->Q[0] = params_in->Q[0];
   params_out->P[0] = params_in->P[0];
@@ -102,9 +106,6 @@ struct HagedornWaves *hag_project(struct HagedornWaves *params_in, unsigned int 
   /******************************************************************************/
   // Compute weights and nodes of Gauss-Hermite rule 
   /******************************************************************************/
-  w = ( double * ) malloc ( n * sizeof ( double ) ); // your main function could pass these values to a function call
-  x = ( double * ) malloc ( n * sizeof ( double ) ); // these are pointers so easy to pass
-  f = ( double complex * ) malloc ( n * sizeof ( double complex ) ); // these are pointers so easy to pass
   
   a = creal(params_out->q[0]);
   b = 1.0 / 4 / creal(params_in->eps);
@@ -136,9 +137,64 @@ struct HagedornWaves *hag_project(struct HagedornWaves *params_in, unsigned int 
   /******************************************************************************/
   for (unsigned int index=0; index < params_out->size; index++){
     evaluate_f(pot, params_in, params_out, 0, index, x, f, n);  
-    params_out->c[index] = pow(M_PI * params_out->eps, - 1.0/4) * pow(params_out->Q[0], -0.5 )* inner_product(w, f, n);
+    params_out->c[index] = pow(M_PI * params_out->eps, - 1.0/4) \
+                           * pow(params_out->Q[0], -0.5 ) \
+                           * inner_product(w, f, n);
   }
   // return set of parameters for transmitted wavepacket 
   return params_out;// this might not work as the scope end?
 }
+
+
+
+
+struct HagedornWaves *hag_project_exact(struct HagedornWaves *params_in, long unsigned int n, 
+                                  unsigned int K, struct Potential *pot, double complex mean)
+
+/******************************************************************************/
+/*
+  Purpose:
+
+  Compute exact integrals for coefficients. 
+
+*/
+{
+  double *x;
+  double complex *f;
+  
+
+  x = ( double * ) malloc ( n * sizeof ( double ) ); // these are pointers so easy to pass
+  f = ( double complex * ) malloc ( n * sizeof ( double complex ) ); // these are pointers so easy to pass
+  /******************************************************************************/
+  // compute the new parameter set ?
+  /******************************************************************************/
+  // can you create a copy instead? using pointers perhaps?
+  struct HagedornWaves *params_out = malloc(sizeof(struct HagedornWaves)); 
+  params_out->state = 0;
+  params_out->size = K;
+  params_out->eps = params_in->eps;
+  params_out->s = params_in->s;
+  // energy conservation for new momentum parameter
+  params_out->q[0] = mean;  
+  // keep the same position parameter
+  params_out->p[0] = params_in->p[0];// this is position
+  params_out->Q[0] = params_in->Q[0];
+  params_out->P[0] = params_in->P[0];
+  params_out->c  = ( double complex * ) malloc ( K * sizeof ( double complex ) ); // these are pointers so easy to pass
+
+  /******************************************************************************/
+  // Compute Hagedorn coefficients of projected wavepacket
+  /******************************************************************************/
+  grid_uniform_fill(x, -2, 5, n);
+  for (unsigned int index=0; index < params_out->size; index++){
+    evaluate_f(pot, params_in, params_out, 0, index, x, f, n);  
+    for (long unsigned int i=0; i<n; i++){
+        params_out->c[index] += ( f[i] * hag_wavepackets_gaussian_evaluate(x[i], params_out) ); 
+    }
+    params_out->c[index] *= fabs(x[1] - x[0]);
+  }
+
+  return params_out;// this might not work as the scope end?
+}
+
 

@@ -11,6 +11,9 @@
 struct HagedornWaves *hag_project(struct HagedornWaves *params_in,
                                   unsigned int n, unsigned int K, struct Potential *pot);
 
+struct HagedornWaves *hag_project_exact(struct HagedornWaves *params_in,
+                                  long unsigned int n, unsigned int K, 
+                                  struct Potential *pot, double complex mean);
 
 #endif 
 

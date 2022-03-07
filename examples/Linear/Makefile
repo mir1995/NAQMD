@@ -7,9 +7,9 @@ POT_DIR = ../../src/Potential
 ODE_DIR = ../../src/Odeint
 OBJ_DIR = ./Object
 
-EXE = hagedorn_linear# hagedorn_linear_projection_comparison   
+EXE = hagedorn_linear_coefficients # hagedorn_linear# hagedorn_linear_projection_comparison   
 # should not be a problem # it would be good to keep a separate file with the dependencies
-SRCS = $(wildcard hagedorn_linear.c $(HAG_DIR)/*.c $(GRID_DIR)/*.c $(POT_DIR)/potential.c $(POT_DIR)/pot_linear.c $(POT_DIR)/potential_io.c $(QUAD_DIR)/*.c $(METRICS_DIR)/*.c ) 
+SRCS = $(wildcard hagedorn_linear_coefficients.c $(HAG_DIR)/*.c $(GRID_DIR)/*.c $(POT_DIR)/potential.c $(POT_DIR)/pot_linear.c $(POT_DIR)/potential_io.c $(QUAD_DIR)/*.c $(METRICS_DIR)/*.c ) 
 OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS))) 
 
 vpath %.c $(LINEAR_DIR) $(HAG_DIR) $(POT_DIR) $(QUAD_DIR) $(GRID_DIR) $(METRICS_DIR) 

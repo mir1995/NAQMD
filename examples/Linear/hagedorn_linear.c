@@ -134,14 +134,13 @@ int main ( int argc, char *argv[] )
   // evaluate superadiabatic wavepacket at a set of points
   hag_superadiabatic_formula(x, f, &params_in, n_points, pot, "constant");
   // evaluate hagedorn wavepacket at a set of points
-  //hag_wavepackets_fill(x, f_hag, params_out, n_points); // this turns out to be the problem
-  hag_wavepackets_fill(x, f_hag, &params_in, n_points); // this turns out to be the problem
+  hag_wavepackets_fill(x, f_hag, params_out, n_points); // this turns out to be the problem
   
   // print grid values x and difference to a file 
   
-  sprintf(fname_error, "data/linear_hagedorn_projection_error_K%d.txt", K); 
+  sprintf(fname_error, "data/linear_hagedorn_projection_error_%d.txt", n); 
   sprintf(fname_grid, "data/difference_K%d.txt", K); 
-  sprintf(fname_grid, "data/wavepacket_crossing_transmitted.txt"); 
+  //sprintf(fname_grid, "data/wavepacket_crossing_transmitted.txt"); 
   
   file_grid = fopen(fname_grid, "w"); 
   file_error = fopen(fname_error, "a+"); 
