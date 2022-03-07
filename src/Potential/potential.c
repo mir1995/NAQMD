@@ -18,7 +18,7 @@ double v_down(struct Potential *pot, double *x, unsigned int dim){
   return - rho(pot, x, dim) + v_trace(pot, x, dim);
 }
 
-// i am thinking this will not work
+// maybe pass the whether you are on an excited state or not as an argument
 void grad_v_up(struct Potential *pot, double *grad_v, double *x, unsigned int dim){
 
   double *grad_zd = (double *)malloc(dim * sizeof(double));
@@ -57,6 +57,83 @@ void grad_v_down(struct Potential *pot, double *grad_v, double *x, unsigned int 
   free(grad_traced); 
 }
 
+
+/* Build Hessian matrix for model systems. Assume ... */
+void hess_v_up(struct Potential *pot, double *hess_v, double *x, unsigned int dim){
+
+  // grad
+  double *grad_z = (double *)malloc(dim * sizeof(double));
+  double *grad_v12 = (double *)malloc(dim * sizeof(double));
+  double *grad_trace = (double *)malloc(dim * sizeof(double));
+  // hessian
+  double *hess_z = (double *)malloc(dim * dim * sizeof(double));
+  double *hess_v12 = (double *)malloc(dim * dim * sizeof(double));
+  double *hess_trace = (double *)malloc(dim * dim*  sizeof(double));
+ 
+  // evaluate gradients and hessian
+  v_zd(pot, x, grad_z, dim); 
+  v_v12d(pot, x, grad_v12, dim);
+  v_traced(pot, x, grad_trace, dim);
+  v_zdd(pot, x, hess_z, dim); 
+  v_v12dd(pot, x, hess_v12, dim);
+  v_tracedd(pot, x, hess_trace, dim);
+
+  for(unsigned int i=0; i<dim; i++){
+    for(unsigned int j=0; j<dim; j++){
+      hess_v[i] = hess_trace[i] + (grad_z[i] * grad_z[i] + v_z(pot, x, dim) * hess_z[i]+ \
+                   grad_v12[i] * grad_v12[i] + v_v12(pot, x, dim) * hess_v12[i])/\
+                  rho(pot, x, dim) + \
+                  pow( v_z(pot, x, dim) * grad_z[i] + v_v12(pot, x, dim) * grad_v12[i], 2 )/\
+                  pow(rho(pot, x, dim), 3);
+    }
+  }
+  
+  free(grad_z); 
+  free(grad_v12); 
+  free(grad_trace); 
+  free(hess_z); 
+  free(hess_v12); 
+  free(hess_trace); 
+}
+
+void hess_v_down(struct Potential *pot, double *hess_v, double *x, unsigned int dim){
+  
+  // grad
+  double *grad_z = (double *)malloc(dim * sizeof(double));
+  double *grad_v12 = (double *)malloc(dim * sizeof(double));
+  double *grad_trace = (double *)malloc(dim * sizeof(double));
+  // hessian
+  double *hess_z = (double *)malloc(dim * dim * sizeof(double));
+  double *hess_v12 = (double *)malloc(dim * dim * sizeof(double));
+  double *hess_trace = (double *)malloc(dim * dim*  sizeof(double));
+ 
+  // evaluate gradients and hessian
+  v_zd(pot, x, grad_z, dim); 
+  v_v12d(pot, x, grad_v12, dim);
+  v_traced(pot, x, grad_trace, dim);
+  v_zdd(pot, x, hess_z, dim); 
+  v_v12dd(pot, x, hess_v12, dim);
+  v_tracedd(pot, x, hess_trace, dim);
+
+  for(unsigned int i=0; i<dim; i++){
+    for(unsigned int j=0; j<dim; j++){
+      hess_v[i] = hess_trace[i] - (grad_z[i] * grad_z[i] + v_z(pot, x, dim) * hess_z[i]+ \
+                   grad_v12[i] * grad_v12[i] + v_v12(pot, x, dim) * hess_v12[i])/\
+                  rho(pot, x, dim) - \
+                  pow( v_z(pot, x, dim) * grad_z[i] + v_v12(pot, x, dim) * grad_v12[i], 2 )/\
+                  pow(rho(pot, x, dim), 3);
+    }
+  }
+  
+  free(grad_z); 
+  free(grad_v12); 
+  free(grad_trace); 
+  free(hess_z); 
+  free(hess_v12); 
+  free(hess_trace); 
+
+}
+
 struct Potential    *potential_construct(
     double (*func_trace)(struct Potential *pot, double *x, unsigned int dim),
     double (*func_z)(struct Potential *pot, double *x, unsigned int dim),
@@ -64,6 +141,7 @@ struct Potential    *potential_construct(
     void (*func_traced)(struct Potential *pot, double *x, double *grad, unsigned int dim),
     void (*func_zd)(struct Potential *pot, double *x, double *grad, unsigned int dim),
     void (*func_v12d)(struct Potential *pot, double *x, double *grad, unsigned int dim),
+    void (*func_tracedd)(struct Potential *pot, double *x, double *hess, unsigned int dim),
     void (*func_zdd)(struct Potential *pot, double *x, double *hess, unsigned int dim),
     void (*func_v12dd)(struct Potential *pot, double *x, double *hess, unsigned int dim),
     double complex (*func_get_tau)(struct Potential *pot),
@@ -85,10 +163,13 @@ struct Potential    *potential_construct(
   pot->func_traced = v_traced;
   pot->func_zd = func_zd;
   pot->func_v12d = func_v12d;
+  pot->func_tracedd = v_tracedd;
   pot->func_zdd = func_zdd;
   pot->func_v12dd = func_v12dd;
   pot->func_gradup = grad_v_up;
   pot->func_graddown = grad_v_down;
+  pot->func_hessup = grad_v_up;
+  pot->func_hessdown = grad_v_down;
   pot->func_get_tau = func_get_tau;
 
   return pot;
