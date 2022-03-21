@@ -149,9 +149,9 @@ struct Potential    *potential_construct(
   
   struct Potential *pot = malloc(sizeof(struct Potential));
   // parameters
-  pot->delta = param[1];
-  pot->alpha = param[2];
-  pot->eps = param[0];
+  if (param[0]){pot->eps = param[0];}
+  if (param[1]){pot->delta = param[1];}
+  if (param[2]){pot->alpha= param[2];}
   if (param[3]){pot->gamma = param[3];}
   // functions
   pot->func_rho = rho;
@@ -168,8 +168,8 @@ struct Potential    *potential_construct(
   pot->func_v12dd = func_v12dd;
   pot->func_gradup = grad_v_up;
   pot->func_graddown = grad_v_down;
-  pot->func_hessup = grad_v_up;
-  pot->func_hessdown = grad_v_down;
+  pot->func_hessup = hess_v_up;
+  pot->func_hessdown = hess_v_down;
   pot->func_get_tau = func_get_tau;
 
   return pot;

@@ -44,7 +44,7 @@ struct Potential    *potential_construct(
     double complex (*func_get_tau)(struct Potential *pot),
     char* potential_name, double param[]);
 
-double rho(struct Potential *pot, double *x, unsigned int dim);
+/* functions to be defined in the model potential*/
 double v_trace(struct Potential *pot, double *x, unsigned int dim);
 double v_z(struct Potential *pot, double *x, unsigned int dim);
 double v_v12(struct Potential *pot, double *x, unsigned int dim);
@@ -54,6 +54,8 @@ void v_v12d(struct Potential *pot, double *x, double *grad, unsigned int dim);
 void v_tracedd(struct Potential *pot, double *x, double *hess, unsigned int dim);
 void v_zdd(struct Potential *pot, double *x, double *hess, unsigned int dim);
 void v_v12dd(struct Potential *pot, double *x, double *hess, unsigned int dim);
+/* */
+double rho(struct Potential *pot, double *x, unsigned int dim);
 double v_up(struct Potential *pot, double *x, unsigned int dim);
 double v_down(struct Potential *pot, double *x, unsigned int dim);
 double complex get_tau(struct Potential *pot);
