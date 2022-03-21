@@ -114,8 +114,12 @@ void v_traced(struct Potential *pot, double *x, double *grad, unsigned int dim){
   grad[0] = 0.5 * (v11d(x) + v22d(x));
 }
 
-double get_tau(struct Potential *pot){
+void v_tracedd(struct Potential *pot, double *x, double *hess, unsigned int dim){
+  hess[0] = 0.5 * (v11dd(x) + v22dd(x));
+}
+
+double complex get_tau(struct Potential *pot){
   // the value of tau has been computed separately 
-  return 0.0023923147;
+  return 0.0001789012 + I*0.0023923147;
 }
 
