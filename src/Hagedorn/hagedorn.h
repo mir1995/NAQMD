@@ -9,10 +9,10 @@ struct HagedornWaves{
   unsigned int   dim;
   unsigned int   size; //  number of coefficients
   bool           state; // upper or lower level
-  double complex eps;
-  double complex s;
-  double complex q[DIM]; // i am not yet sure whether we need it to be complex
-  double complex p[DIM];
+  double eps;
+  double s;
+  double q[DIM]; // i am not yet sure whether we need it to be complex
+  double p[DIM];
   double complex Q[DIM * DIM];
   double complex P[DIM * DIM];
   double complex *c; // coefficients of Hagedorn wavepackets
