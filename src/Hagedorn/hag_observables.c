@@ -12,6 +12,14 @@ static double complex inner_product(double *w, double complex *f, unsigned int n
   return sum;
 }
 
+
+double hag_observables_get_variance(struct HagedornWaves *params){
+  
+  // assume it's a gaussian 
+
+  return params->eps * creal(params->Q[0] * conj(params->Q[0]));
+}
+
 double complex hag_observables_get_mean(double *x, double *w, double complex *f,   
                                         struct HagedornWaves *params_in, 
                                         struct Potential *pot,

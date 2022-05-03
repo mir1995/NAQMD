@@ -5,9 +5,9 @@
 # include <time.h>
 # include <string.h>
 # include <complex.h>
-# include "../../../src/Hagedorn/hagedorn.h" 
-# include "../../../src/PartitionUnity/partition_unity.h" 
-# include "../../../src/Hagedorn/hag_observables.h" 
+# include "../src/Hagedorn/hagedorn.h" 
+# include "../src/PartitionUnity/partition_unity.h"
+# include "../src/Hagedorn/hag_io.h"
 
 # define TIME 10
 # define TIME_STEP 0.01
@@ -26,12 +26,13 @@ int main ( int argc, char *argv[] )
 /*
   Purpose:
 
-    MAIN is the main program for HAG_HARMONIC_OSCILLATOR.C
+    MAIN is the main program for PARTITION_UNITY.C
 
   Discussion:
 
-    This program simulates the dynamics of a wavepacket 
-    on a Harmonic oscillator.
+    This program tests the decomposition of a broad Hagedorn 
+    wavepacket into a families of narrower Hagedorn wavepackets
+    passing through a partition of unity. 
 
   Licensing:
 
@@ -57,15 +58,20 @@ int main ( int argc, char *argv[] )
   /* parameters for Hagedorn wavepacket at crossing */
   q[0] = X0, p[0] = K0, Q[0] = sqrt(2), P[0] = I / sqrt(2);
   s = 0, c[0] = 1; // wavepacket at crossing is a gaussian
-  
+
+  /* HOW DO I CHANGE THE VARIANCE */
 
   /* Generate initial condition */
-  printf("\nGenerate initial condition\n");
   params = hag_wavepacket_create(DIM, SIZE, STATE, EPS, s, q, p, Q, P, c);
 
+  hag_write("partition_unity_hagedorn_wavepacket_parameters", params);
+ 
+  unsigned int F;
+  struct HagedornWaves **families = hag_projection_partition_unity(params, &F);
+  for (unsigned int i=0; i<F; i++){
+    hag_write("partition_unity_hagedorn_wavepacket_parameters_families_sigma2", families[i]);
+  }
   // return variance of wavepacket assume it's gaussian
-  double var = hag_observables_get_variance(params);
-  printf("Variance Hagedorn wavepacket : %.f\n", var);
   // look up Caroline's paper for tails norm
   /* families of Hagedorn Wavepackets */
   
@@ -73,7 +79,7 @@ int main ( int argc, char *argv[] )
   /* Quadrature rule start */
 
   /* pointer to an array of families of Hagedorn Wavepackets*/
-  struct HagedornWaves *families = hag_projection_partition_unity(params);
+  //struct HagedornWaves *families = hag_projection_partition_unity(params);
   
 
   // build a routine to get x_l, x_r, nodes
@@ -108,9 +114,13 @@ int main ( int argc, char *argv[] )
       (params_projection + i)->c[j] = project();
     }
   }
-  */
-
+  params_projection->c[0] = 5;
+  params_projection->c[1] = 5;
+  printf("c[1] = %.4f\n", creal(params_projection->c[1]));
+  
   free(params_projection); 
+
+  */
 
 }
 

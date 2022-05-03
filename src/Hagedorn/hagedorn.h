@@ -15,17 +15,18 @@ struct HagedornWaves{
   double p[DIM];
   double complex Q[DIM * DIM];
   double complex P[DIM * DIM];
-  double complex *c; // coefficients of Hagedorn wavepackets
+  double complex c[]; // coefficients of Hagedorn wavepackets
 };
 typedef struct HagedornWaves HagedornWaves;
 
-// probably get rid of this function eventually
-struct HagedornWaves *hag_create(double complex eps[], double complex q[],
-                                double complex p[], double complex Q[], 
-                                double complex P[], double complex c[]);
 
-// since all we need is the parameters and coefficients at each time step 
-// we can print them only. so it would make sense to have the below in a separate .h file
+/*--------- Handles creation of a HagedornWaves struct */
+struct HagedornWaves *hag_wavepacket_create(unsigned int dim, unsigned int size, 
+                                            bool state, double eps, double s, 
+                                            double q[], double p[], double complex Q[],
+                                            double complex P[], double complex c[]);
+
+
 /*--------- Handles generation of Hagedorn wavepackets -------------- */
 
 double complex hag_wavepackets_gaussian_evaluate(

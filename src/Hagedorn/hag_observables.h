@@ -11,6 +11,8 @@ double complex hag_observables_get_mean(double *x, double *w, double complex *f,
                                         struct Potential *pot,
                                         unsigned int n);
 
+double hag_observables_get_variance(struct HagedornWaves *params);
+
 #endif 
 
 

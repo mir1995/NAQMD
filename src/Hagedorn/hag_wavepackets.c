@@ -2,9 +2,40 @@
 #include <complex.h>
 #include <tgmath.h>
 #include <stdio.h>
+# include <stdlib.h>
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
 #endif
+
+
+struct HagedornWaves *hag_wavepacket_create(unsigned int dim, unsigned int size, 
+                                            bool state, double eps, double s, 
+                                            double q[], double p[], double complex Q[],
+                                            double complex P[], double complex c[]){
+
+  struct HagedornWaves *params = malloc(sizeof(*params) + size * sizeof(params->c[0]));
+  
+  params->dim = dim;
+  params->size = size; 
+  params->state = state;
+  params->eps = eps;
+  params->s = s;
+  for (unsigned int i = 0; i<dim; i++){
+    params->q[i] = q[i];
+    params->p[i] = p[i];
+    for (unsigned int j = 0; j<dim; j++){
+      params->Q[i*dim + j] = Q[i*dim + j]; 
+      params->P[i*dim + j] = P[i*dim + j]; 
+    }
+  }
+  if (c){
+    for (unsigned int i = 0; i<size; i++){
+      params->c[i] = c[i];
+    }
+  }
+
+  return params;
+}
 
 
 //typedef struct HagedornParameters HagedornParameters;
@@ -69,4 +100,6 @@ void hag_wavepackets_fill(double x[], double complex y[],
             hag_wavepackets_gaussian_evaluate(x[i], params);
   }
 }
+
+
 
