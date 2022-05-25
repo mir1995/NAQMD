@@ -6,24 +6,44 @@
  * include the parameters from an 
  * input file */
 
-# define C1 4.39
+/*
+# define C1 0.16132956919335972 
 
-# define A1 -0.521
-# define A2 0.081
-# define A3 0.0
+# define A1 -0.09977184835097695  
+# define A2 0.015503564052709667  
+# define A3 0.0 
 
-# define a1 1.703
-# define a2 1.0
-# define a3 1.595
+# define a1 1.7027027027027026   
+# define a2 1.0 
+# define a3 1.5945945945945947 
 
-# define C2 -0.45
+# define C2 -0.01653719957562913 
 
-# define B1 0.698 
-# define B2 -0.467
+# define B1 0.1337954279729691  
+# define B2 -0.08949784703155125  
 # define B3 0.0
 
-# define b 1.216
+# define b 0.23314993685296326
+*/
 
+# define C1 4.39  
+
+# define A1 -0.521 
+ 
+# define A2 0.081  
+# define A3 0.0 
+
+# define a1 1.703   
+# define a2 1.0 
+# define a3 1.595 
+
+# define C2 -0.45 
+
+# define B1 0.698  
+# define B2 -0.467 
+# define B3 0.0 
+
+# define b 1.216
 /* you could make dim an attribute of potential */
 
 /* Handles construction of potential in the adiabatic representation */

@@ -71,9 +71,9 @@ struct Potential    *potential_construct(
   
   struct Potential *pot = malloc(sizeof(struct Potential));
   // parameters
-  pot->delta = param[1];
-  pot->alpha = param[2];
-  pot->eps = param[0];
+  pot->eps = param[0]; 
+  if (param[1]){pot->delta = param[1];} 
+  if (param[2]){pot->alpha = param[2];} 
   if (param[3]){pot->gamma = param[3];}
   // functions
   pot->func_rho = rho;

@@ -57,7 +57,7 @@ struct Particle    *sh_sample_wigner(int dim, int npart); // allocate mem for n 
 
 /* ---------- Initialise Wigner samples --------- */
 
-void        sh_wigner_fill(struct Particle *particles, double *q, double *p, double std, 
+void        sh_wigner_fill(struct Particle *particles, double *q, double *p, double *std, 
                           const unsigned int npart, const unsigned int dim);
 
 
